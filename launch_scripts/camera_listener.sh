@@ -1,1 +1,1 @@
-python3 ../src/robutler_navigation/scripts/camera.py
+python3 src/robutler_navigation/scripts/camera.py
