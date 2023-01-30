@@ -3,6 +3,7 @@
 import rospy
 from sensor_msgs.msg import Image
 
+import YOLO.yolo as yolo
 # Import OpenCV libraries and tools
 import cv2
 from cv_bridge import CvBridge, CvBridgeError
@@ -16,7 +17,7 @@ bridge = CvBridge()
 # Define a function to show the image in an OpenCV Window
 def show_image(img):
     cv2.imshow("Image Window", img)
-    cv2.waitKey(3)
+    cv2.waitKey(1)
 
 # Define a callback for the Image message
 def image_callback(img_msg):
@@ -30,7 +31,11 @@ def image_callback(img_msg):
         rospy.logerr("CvBridge Error: {0}".format(e))
 
     # Show the converted image
-    show_image(cv_image)
+    # show_image(cv_image)
+    objects = yolo.detect(cv_image, "YOLO/yolov3.cfg", "YOLO/yolov3.weights", "YOLO/yolov3.txt")
+    
+    # Show the image
+    show_image(objects)
 
 
 def main():

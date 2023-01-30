@@ -9,7 +9,10 @@ def get_output_layers(net):
     
     layer_names = net.getLayerNames()
 
-    output_layers = [layer_names[i - 1] for i in net.getUnconnectedOutLayers()]
+    output_layers = []
+    for i in net.getUnconnectedOutLayers():
+        idx = i[0]
+        output_layers.append(layer_names[idx-1])
 
     return output_layers
 
@@ -28,7 +31,7 @@ def draw_bounding_box(img, class_id, confidence, x, y, x_plus_w, y_plus_h, COLOR
 
     return img
 
-def main(image, config_file, weights_file, classes_file):
+def detect(image, config_file, weights_file, classes_file):
 
     print("[INFO] loading network...")
 
@@ -89,6 +92,7 @@ def main(image, config_file, weights_file, classes_file):
     # go through the detections remaining
     # after nms and draw bounding box
     for i in indices:
+        i = i[0]
         box = boxes[i]
         x = box[0]
         y = box[1]
@@ -96,9 +100,11 @@ def main(image, config_file, weights_file, classes_file):
         h = box[3]
 
         image = draw_bounding_box(image, class_ids[i], confidences[i], round(x), round(y), round(x+w), round(y+h), COLORS, classes)
-    print("here")
-    # display output image    
-    cv2.imshow("object detection", image)
+    
+    return image
+    
+    # # display output image    
+    # cv2.imshow("object detection", image)
 
-    # wait until any key is pressed
-    cv2.waitKey()
+    # # wait until any key is pressed
+    # cv2.waitKey()
