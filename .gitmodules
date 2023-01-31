@@ -1,0 +1,6 @@
+[submodule "src/aws-robomaker-hospital-world"]
+	path = src/aws-robomaker-hospital-world
+	url = git@github.com:aws-robotics/aws-robomaker-hospital-world.git
+[submodule "src/aws-robomaker-small-house-world"]
+	path = src/aws-robomaker-small-house-world
+	url = git@github.com:aws-robotics/aws-robomaker-small-house-world.git
