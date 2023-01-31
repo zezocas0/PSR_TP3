@@ -5,6 +5,18 @@ import cv2
 import argparse
 import numpy as np
 
+def load_model(config_file, weights_file, classes_file):
+    print("[INFO] loading network...")
+
+    # load the model from disk
+    net = cv2.dnn.readNet(weights_file, config_file)
+
+    # load the classes from disk
+    with open(classes_file, 'r') as f:
+        classes = [line.strip() for line in f.readlines()]
+
+    return net, classes
+
 # function to get the output layer names 
 # in the architecture
 def get_output_layers(net):
@@ -31,26 +43,14 @@ def draw_bounding_box(img, class_id, confidence, x, y, x_plus_w, y_plus_h, COLOR
 
     return img
 
-def detect(image, config_file, weights_file, classes_file):
-
-    print("[INFO] loading network...")
+def detect(image, net, classes):
 
     Width = image.shape[1]
     Height = image.shape[0]
     scale = 0.00392
 
-    # read class names from text file
-    #TODO: Restrict classes to the ones we need to look for
-    classes = None
-    with open(classes_file, 'r') as f:
-        classes = [line.strip() for line in f.readlines()]
-
     # generate different colors for different classes 
     COLORS = np.random.uniform(0, 255, size=(len(classes), 3))
-
-    # read pre-trained model and config file
-    #TODO: don't load the YOLO model every time
-    net = cv2.dnn.readNet(weights_file, config_file)
 
     # create input blob 
     blob = cv2.dnn.blobFromImage(image, scale, (416,416), (0,0,0), True, crop=False)

@@ -14,6 +14,10 @@ rospy.loginfo("Starting camera_listener node")
 # Initialize the CvBridge class
 bridge = CvBridge()
 
+# YOLO parameters
+net = None
+classes = None
+
 # Define a function to show the image in an OpenCV Window
 def show_image(img):
     cv2.imshow("Image Window", img)
@@ -32,14 +36,23 @@ def image_callback(img_msg):
 
     # Show the converted image
     # show_image(cv_image)
-    objects = yolo.detect(cv_image, "YOLO/yolov3.cfg", "YOLO/yolov3.weights", "YOLO/yolov3.txt")
+    if net is None or classes is None:
+        return
+    objects = yolo.detect(cv_image, net, classes)
     
     # Show the image
     show_image(objects)
 
 
 def main():
+    global net, classes
     sub_image = rospy.Subscriber("/camera/rgb/image_raw", Image, image_callback)
+
+    # Load YOLO
+    net, classes = yolo.load_model("YOLO/yolov3.cfg", "YOLO/yolov3.weights", "YOLO/yolov3.txt")
+
+    print(net)
+    print(classes)
 
     # Initialize an OpenCV Window
     cv2.namedWindow("Image Window", 1)
