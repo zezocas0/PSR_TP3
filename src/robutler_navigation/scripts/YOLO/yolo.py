@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # import required packages
 import cv2
 import argparse
