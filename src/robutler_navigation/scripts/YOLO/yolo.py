@@ -9,7 +9,7 @@ def load_model(config_file, weights_file, classes_file):
     print("[INFO] loading network...")
 
     # load the model from disk
-    net = cv2.dnn.readNet(weights_file, config_file)
+    net = cv2.dnn.readNetFromDarknet(config_file, weights_file)
 
     # load the classes from disk
     with open(classes_file, 'r') as f:

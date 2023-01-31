@@ -49,7 +49,7 @@ def main():
     sub_image = rospy.Subscriber("/camera/rgb/image_raw", Image, image_callback)
 
     # Load YOLO
-    net, classes = yolo.load_model("YOLO/yolov3.cfg", "YOLO/yolov3.weights", "YOLO/yolov3.txt")
+    net, classes = yolo.load_model("YOLO/yolov3.cfg", "YOLO/yolov3-tiny.weights", "YOLO/yolov3.txt")
 
     print(net)
     print(classes)
