@@ -21,8 +21,6 @@ def get_output_layers(net):
 # function to draw bounding box on the detected object with class name
 def draw_bounding_box(img, class_id, confidence, x, y, x_plus_w, y_plus_h, COLORS, classes):
 
-    print("drawing bounding box")
-
     label = str(classes[class_id])
 
     color = COLORS[class_id]
@@ -42,6 +40,7 @@ def detect(image, config_file, weights_file, classes_file):
     scale = 0.00392
 
     # read class names from text file
+    #TODO: Restrict classes to the ones we need to look for
     classes = None
     with open(classes_file, 'r') as f:
         classes = [line.strip() for line in f.readlines()]
@@ -50,6 +49,7 @@ def detect(image, config_file, weights_file, classes_file):
     COLORS = np.random.uniform(0, 255, size=(len(classes), 3))
 
     # read pre-trained model and config file
+    #TODO: don't load the YOLO model every time
     net = cv2.dnn.readNet(weights_file, config_file)
 
     # create input blob 
