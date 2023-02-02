@@ -53,7 +53,7 @@ def main():
     bridge = CvBridge()
 
     # Load YOLO
-    yolo = YOLO("YOLO/yolov3-tiny.cfg", "YOLO/yolov3-tiny.weights", "YOLO/coco.names")
+    yolo = YOLO(rospy.get_param("~config_file"), rospy.get_param("~weights_file"), rospy.get_param("~coco_names"))
 
     # Subscribe to the camera topic and set callback function
     sub_image = rospy.Subscriber("/camera/rgb/image_raw", Image, partial(image_callback, {'yolo': yolo, 'bridge': bridge}))
