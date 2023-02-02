@@ -1,24 +1,16 @@
 #!/usr/bin/env python3
 # Import ROS libraries and messages
+from functools import partial
 import time
 import rospy
 from sensor_msgs.msg import Image
 
-import YOLO.yolo as yolo
+# Import YOLO model
+from YOLO.yolo import yolo as YOLO
+
 # Import OpenCV libraries and tools
 import cv2
 from cv_bridge import CvBridge, CvBridgeError
-
-rospy.init_node('camera_listener', anonymous=True)
-rospy.loginfo("Starting camera_listener node")
-
-# Initialize the CvBridge class
-bridge = CvBridge()
-
-# YOLO parameters
-model = None
-net = None
-classes = None
 
 # Define a function to show the image in an OpenCV Window
 def show_image(img):
@@ -26,7 +18,10 @@ def show_image(img):
     cv2.waitKey(1)
 
 # Define a callback for the Image message
-def image_callback(img_msg):
+def image_callback(args, img_msg):
+    yolo = args['yolo']
+    bridge = args['bridge']
+
     # log some info about the image topic
     rospy.loginfo(img_msg.header)
 
@@ -38,12 +33,12 @@ def image_callback(img_msg):
 
     # Show the converted image
     # show_image(cv_image)
-    if model is None or net is None or classes is None:
+    if yolo.model is None or yolo.net is None or yolo.classes is None:
         print("YOLO not loaded")
         return
 
     start = time.time()
-    objects = yolo.detect(cv_image, model, net, classes)
+    objects = yolo.detect(cv_image)
     print("--- %s seconds ---" % (time.time() - start))
     
     # Show the image
@@ -51,11 +46,18 @@ def image_callback(img_msg):
 
 
 def main():
-    global model, net, classes
-    sub_image = rospy.Subscriber("/camera/rgb/image_raw", Image, image_callback)
+    rospy.init_node('camera_listener', anonymous=True)
+    rospy.loginfo("Starting camera_listener node")
+
+    # Initialize the CvBridge class
+    bridge = CvBridge()
 
     # Load YOLO
-    model, net, classes = yolo.load_model("YOLO/yolov3-tiny.cfg", "YOLO/yolov3-tiny.weights", "YOLO/coco.names")
+    yolo = YOLO("YOLO/yolov3-tiny.cfg", "YOLO/yolov3-tiny.weights", "YOLO/coco.names")
+
+    # Subscribe to the camera topic and set callback function
+    sub_image = rospy.Subscriber("/camera/rgb/image_raw", Image, partial(image_callback, {'yolo': yolo, 'bridge': bridge}))
+
 
     # Initialize an OpenCV Window
     cv2.namedWindow("Image Window", 1)
