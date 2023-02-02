@@ -11,10 +11,10 @@ DWAPlannerROS:
   max_vel_trans:  0.26
   min_vel_trans:  0.13
 
-  #max_vel_theta: 1.82
-  max_vel_theta: .5
-  min_vel_theta: 0.9
-  #min_vel_theta: 0.1
+  max_vel_theta: 1.82
+  #max_vel_theta: .5
+  #min_vel_theta: 0.9
+  min_vel_theta: 0.1
 
   acc_lim_x: 2.5
   acc_lim_y: 0.0
@@ -36,9 +36,9 @@ DWAPlannerROS:
   sim_granularity: 0.025
 
 # Trajectory Scoring Parameters
-  path_distance_bias: 32.0
-  goal_distance_bias: 20.0
-  occdist_scale: 0.02
+  path_distance_bias: 1.0
+  goal_distance_bias: 0.8
+  occdist_scale: 0.01
   forward_point_distance: 0.05
   stop_time_buffer: 0.2
   scaling_speed: 0.25
