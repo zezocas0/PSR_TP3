@@ -1,0 +1,12 @@
+<launch>
+    <node pkg="robutler_vision" name="camera_listener_color_detection" type="color_detection.py" output="screen">
+        <param name="camera_file" value="/camera/rgb/image_raw" />
+        <param name="min_b" value="50" />
+        <param name="min_g" value="0" />
+        <param name="min_r" value="0" />
+        <param name="max_b" value="255" />
+        <param name="max_g" value="50" />
+        <param name="max_r" value="284" />
+    </node>
+</launch>
+  
