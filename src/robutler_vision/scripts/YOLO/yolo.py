@@ -37,6 +37,7 @@ class yolo:
             class_ids, confidences, boxes = self.model.detect(image, confThreshold=0.1, nmsThreshold=0.2)
 
             people = []
+            objects = []
 
             # draw bounding box on the detected object with class name
             for (class_id, confidence, box) in zip(class_ids, confidences, boxes):
@@ -51,7 +52,8 @@ class yolo:
                 left, top, width, height = box
                 top = max(top, labelSize[1])
                 image = self.draw_bounding_box(image, class_id, confidence, left, top, left + width, top + height, COLORS, self.classes)
-            
+                objects.append((self.classes[class_id], confidence, box)) 
+
             CLOSE_THRESHOLD = 300
             for person in people:
                 left, top, width, height = person[2]
@@ -65,8 +67,9 @@ class yolo:
                         close_count += 1
                 if close_count < 3:
                     image = self.draw_bounding_box(image, person[0], person[1], left, top, left + width, top + height, COLORS, self.classes)
-        
-            return image
+                    objects.append((self.classes[person[0]], person[1], person[2])) 
+
+            return image, objects
 
     # function to draw bounding box on the detected object with class name
     def draw_bounding_box(self, img, class_id, confidence, x, y, x_plus_w, y_plus_h, COLORS, label):
