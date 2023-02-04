@@ -101,7 +101,6 @@ pub = rospy.Publisher('/mission', Properties_msg, queue_size=10)
 rate = rospy.Rate(10) # 10hz
 
 
-
 while not rospy.is_shutdown():
     pub.publish(properties)
     rate.sleep()

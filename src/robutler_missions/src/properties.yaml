@@ -1,9 +1,0 @@
-objects: 
-    - "Cama"
-    - "Cadeira"
-    - "Mesa"
-rooms: 
-        - { "name": "Quarto", "coordinates": [0,0]}
-        - { "name": "Chuveiro", "coordinates": [1,2]}
-        - { "name": "Sala", "coordinates": [3,4]}
-        - {"name": "Everywhere", "coordinates": [0,0]}

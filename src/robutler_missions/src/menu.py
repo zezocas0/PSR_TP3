@@ -20,24 +20,16 @@ h_first_entry = 0
 h_mode_last = 0
 
 def enableCb( feedback ):
+    print(feedback)
     handle = feedback.menu_entry_id
     state = menu_handler.getCheckState( handle )
 
 
     menu_handler.reApply( server )
-    rospy.loginfo("update")
+    rospy.loginfo(handle)
+    rospy.loginfo(state)
     server.applyChanges()
 
-def modeCb(feedback):
-    global h_mode_last
-    menu_handler.setCheckState( h_mode_last, MenuHandler.UNCHECKED )
-    h_mode_last = feedback.menu_entry_id
-    menu_handler.setCheckState( h_mode_last, MenuHandler.CHECKED )
-
-    rospy.loginfo("Switching to menu entry #" + str(h_mode_last))
-    menu_handler.reApply( server )
-    print("DONE")
-    server.applyChanges()
 
 def makeBox( msg ):
     marker = Marker()
@@ -89,14 +81,12 @@ def deepCb( feedback ):
 def initMenu(properties):
 
     for action in properties.actions:
-        entry = menu_handler.insert( action.action, callback=modeCb )
+        entry = menu_handler.insert( action.action, callback=enableCb )
         for room in properties.rooms:
-            entry2 = menu_handler.insert( room.name, parent=entry, callback=modeCb )
+            entry2 = menu_handler.insert( room.name, parent=entry, callback=enableCb )
             for object in  properties.objects:
-                entry3 = menu_handler.insert( object.name, parent=entry2, callback=modeCb )
+                entry3 = menu_handler.insert( object.name, parent=entry2, callback=enableCb )
 
-    # check the very last entry
-    menu_handler.setCheckState( h_mode_last, MenuHandler.CHECKED )
 
 def loadOptions(args: robutler_missions.msg.Properties):
     for i in args.actions:

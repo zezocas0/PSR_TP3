@@ -1,0 +1,17 @@
+objects: 
+    - "Cama"
+    - "Cadeira"
+    - "Mesa"
+    - "Room"
+rooms: 
+        - { "name": "Quarto 1", "coordinates": [0,0]}
+        - { "name": "Quarto 2", "coordinates": [0,0]}
+        - { "name": "Escritorio", "coordinates": [0,0]}
+        - { "name": "Sanitario1", "coordinates": [1,2]}
+        - { "name": "Sanitario2", "coordinates": [1,2]}
+        - { "name": "Cozinha", "coordinates": [3,4]}
+        - { "name": "Sala", "coordinates": [3,4]}
+        - { "name": "Vestibulo1", "coordinates": [3,4]}
+        - { "name": "Vestibulo2", "coordinates": [3,4]}
+        - {"name": "Everywhere", "coordinates": [0,0]}
+ 
