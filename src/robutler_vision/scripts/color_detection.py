@@ -4,7 +4,7 @@ from functools import partial
 import rospy
 from sensor_msgs.msg import Image
 from std_msgs.msg import String
-from robutler_vision.msg import DetectedColor
+#from robutler_vision.msg import DetectedColor
 
 
 import time
