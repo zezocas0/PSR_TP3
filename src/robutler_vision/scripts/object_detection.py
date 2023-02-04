@@ -6,6 +6,7 @@ import time
 import rospy
 from sensor_msgs.msg import Image
 from std_msgs.msg import String
+from robutler_vision.msg import DetectedObject
 
 # Import YOLO model
 from YOLO.yolo import yolo as YOLO
@@ -20,13 +21,16 @@ def show_image(img):
     cv2.waitKey(1)
 
 # Define the message to be published
-def objects_message(objects):
-    return json.dumps([
-        { "class": obj[0], "confidence": float(obj[1][0]), 
-        "left": int(obj[2][0]), "top": int(obj[2][1]), 
-        "width": int(obj[2][2]), "height": int(obj[2][3]) } 
-    for obj in objects])
+def objects_message(obj):
+    msg = DetectedObject()
+    msg.class_name = obj[0]
+    msg.confidence = float(obj[1][0])
+    msg.left = float(obj[2][0])
+    msg.top = float(obj[2][1])
+    msg.width = float(obj[2][2])
+    msg.height = float(obj[2][3])
 
+    return msg
 
 # Define a callback for the Image message
 def image_callback(args, img_msg):
@@ -52,15 +56,17 @@ def image_callback(args, img_msg):
     print("--- %s seconds ---" % (time.time() - start))
     
     # Show the image
-    pub.publish(objects_message(objects))
+    for obj in objects:
+        pub.publish(objects_message(obj))
     show_image(image)
 
 
 def main():
+    pub = rospy.Publisher('/vision/object_detection', DetectedObject, queue_size=10)
+
     rospy.init_node('camera_listener', anonymous=True)
     rospy.loginfo("Starting camera_listener node")
 
-    pub = rospy.Publisher('/vision/object_detection', String, queue_size=10)
 
     # Initialize the CvBridge class
     bridge = CvBridge()
