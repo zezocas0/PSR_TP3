@@ -4,7 +4,7 @@ from functools import partial
 import rospy
 from sensor_msgs.msg import Image
 from std_msgs.msg import String
-#from robutler_vision.msg import DetectedColor
+from robutler_vision.msg import DetectedColor
 
 
 import time
@@ -60,7 +60,11 @@ def show_image(img):
 
 # Define the message to be published
 def colors_message(centroid):
-    return str(centroid[0]) + "," + str(centroid[1])
+    msg = DetectedColor()
+    msg.x = centroid[0]
+    msg.y = centroid[1]
+
+    return msg
 
 # Define a callback for the Image message
 def image_callback(args, img_msg):
@@ -90,7 +94,7 @@ def main():
     rospy.init_node('camera_listener_color_detection', anonymous=True)
     rospy.loginfo("Starting camera_listener_color_detection node")
 
-    pub = rospy.Publisher('/vision/color_detection', String, queue_size=10)
+    pub = rospy.Publisher('/vision/color_detection', DetectedColor, queue_size=10)
 
 
     # Get ROS parameters

@@ -4,8 +4,8 @@
         <param name="min_b" value="0" />
         <param name="min_g" value="0" />
         <param name="min_r" value="0" />
-        <param name="max_b" value="0" />
-        <param name="max_g" value="0" />
+        <param name="max_b" value="255" />
+        <param name="max_g" value="255" />
         <param name="max_r" value="255" />
     </node>
 </launch>
