@@ -7,7 +7,7 @@ import actionlib
 from datetime import datetime
 from std_msgs.msg import String
 from robutler_missions.msg import Request
-from robutler_controller.msg import MoveRobutlerAction, MoveRobutlerGoal, TakePhotoAction, TakePhotoGoal
+from robutler_controller.msg import MoveRobutlerAction, MoveRobutlerGoal, TakePhotoAction, TakePhotoGoal, FindAction, FindGoal
 
 # from missions import Actions
 
@@ -87,7 +87,20 @@ class Actions:
     
     def find(self, room: Room, object: Object):
         rospy.loginfo("Finding %s in room: %s", object.get_name(), room.get_name())
-        #TODO: Implement this function
+
+        self.go_to_room(room)
+        rospy.loginfo("Reached the room...")
+
+        client = actionlib.SimpleActionClient('find', FindAction)
+        client.wait_for_server()
+
+        goal = FindGoal()
+        goal.room = room.get_name()
+        goal.objectType = object.get_name()
+        client.send_goal(goal)
+        client.wait_for_result()
+
+        
 
 
 '''----------------------------------------'''

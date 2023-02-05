@@ -20,6 +20,7 @@ class FindServer:
   def find(self, goal):
     rospy.loginfo('Finding...')
 
+    #TODO: Try to find objects in the room
 
     rospy.loginfo(f'Found {goal.objectType} in {goal.room}')
 
