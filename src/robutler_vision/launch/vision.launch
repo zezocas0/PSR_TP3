@@ -1,4 +1,9 @@
 <launch>
+    <node pkg="robutler_vision" name="camera_listener" type="object_detection.py" output="screen">
+        <param name="config_file" value="$(find robutler_vision)/scripts/YOLO/yolov3-tiny.cfg" />
+        <param name="weights_file" value="$(find robutler_vision)/scripts/YOLO/yolov3-tiny.weights" />
+        <param name="coco_names" value="$(find robutler_vision)/scripts/YOLO/coco.names" />
+    </node>
     <node pkg="robutler_vision" name="camera_listener_color_detection" type="color_detection.py" output="screen">
         <param name="camera_file" value="/camera/rgb/image_raw" />
         <param name="min_b" value="0" />
