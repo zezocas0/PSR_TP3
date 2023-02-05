@@ -5,7 +5,10 @@
     <arg name="z_pos" default="0.0"/>
 
     <!-- Upload robot description xacro to the ros param -->
-    <param name="robot_description" command="$(find xacro)/xacro --inorder $(find robutler_description)/urdf/robutler.urdf.xacro" />
+
+
+    <param name="robot_description" command="$(find xacro)/xacro --inorder $(find robutler_description)/urdf/robutler.urdf.xacro"/>
+
 
     <!-- Spawn the robot in gazebo -->
     <include file="$(find robutler_bringup)/launch/spawn.launch">
@@ -22,5 +25,11 @@
 
     <!-- Launch robot steering -->
     <node name="rqt_robot_steering" pkg="rqt_robot_steering" type="rqt_robot_steering" args="-t" output="screen"/>
+
+    <!-- launch the variation of the antenna joint for robutler(prismatic) testing-->
+    <!-- <node name="joint_state_publisher" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" /> -->
+
+
+
 
 </launch>
