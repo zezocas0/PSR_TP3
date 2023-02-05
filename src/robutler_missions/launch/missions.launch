@@ -2,4 +2,5 @@
 <rosparam command="load" file="$(find robutler_missions)/params/properties.yaml" />
   <node pkg="robutler_missions" type="missions.py" name="missions" output="screen"/>
   <node pkg="robutler_missions" type="menu.py" name="menu" output="screen"/>
+  <node pkg="robutler_missions" type="selection.py" name="selection" output="screen"/>
 </launch>
