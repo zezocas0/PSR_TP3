@@ -58,7 +58,7 @@
         <param name="base_frame_id" value="base_footprint"/>
 
     </node>
-
+    <node pkg="rosservice" type="rosservice" name="global_loc" args="call --wait /global_localization" />
     <!-- Visualization -->
     <!-- <arg name="visualize" default="true"/>
     <group if="$(arg visualize)">
