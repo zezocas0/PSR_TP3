@@ -2,11 +2,14 @@
 # Import ROS libraries and messages
 from functools import partial
 import rospy
+import actionlib
 from std_msgs.msg import String
 from robutler_missions.msg import Request
+from robutler_controller.msg import MoveRobutlerAction, MoveRobutlerGoal
+
 # from missions import Actions
 
-'''LATER IMPORT THIS FROM missions.py FILE'''
+'''TODO: LATER IMPORT THIS FROM missions.py FILE'''
 class Room:
     def __init__(self, name: str, coordinates: list):
         self.name = name
@@ -49,7 +52,17 @@ class Actions:
 
     def go_to_room(self, room: Room):
         rospy.loginfo("Going to room: %s", room.get_name())
-        #TODO: Implement this function
+
+        client = actionlib.SimpleActionClient('move_robutler', MoveRobutlerAction)
+        client.wait_for_server()
+
+        goal = MoveRobutlerGoal()
+        # Fill in the goal here
+        coordinates = room.get_coordinates()
+        goal.x = coordinates[0]
+        goal.y = coordinates[1]
+        client.send_goal(goal)
+        client.wait_for_result(rospy.Duration.from_sec(5.0))
     
     def photo(self, room: Room):
         rospy.loginfo("Taking photo in room: %s", room.get_name())
