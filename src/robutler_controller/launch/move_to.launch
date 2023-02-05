@@ -1,3 +1,0 @@
-<launch>
-    <node pkg="robutler_controller" type="move_to.py" name="move_robutler_to" output="screen"/>
-</launch>
