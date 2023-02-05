@@ -100,7 +100,6 @@ def main():
     }
 
     rospy.init_node('message_handler', anonymous=True)
-    rospy.loginfo("Starting camera_listener node")
 
     actions = Actions()
 

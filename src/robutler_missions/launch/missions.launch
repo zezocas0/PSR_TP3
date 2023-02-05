@@ -3,4 +3,5 @@
   <node pkg="robutler_missions" type="missions.py" name="missions" output="screen"/>
   <node pkg="robutler_missions" type="menu.py" name="menu" output="screen"/>
   <node pkg="robutler_missions" type="selection.py" name="selection" output="screen"/>
+  <node pkg="robutler_missions" type="handler.py" name="mission_handler" output="screen"/>
 </launch>
