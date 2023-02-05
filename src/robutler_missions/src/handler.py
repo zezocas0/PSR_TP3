@@ -3,9 +3,11 @@
 from functools import partial
 import rospy
 import actionlib
+
+from datetime import datetime
 from std_msgs.msg import String
 from robutler_missions.msg import Request
-from robutler_controller.msg import MoveRobutlerAction, MoveRobutlerGoal
+from robutler_controller.msg import MoveRobutlerAction, MoveRobutlerGoal, TakePhotoAction, TakePhotoGoal
 
 # from missions import Actions
 
@@ -62,11 +64,22 @@ class Actions:
         goal.x = coordinates[0]
         goal.y = coordinates[1]
         client.send_goal(goal)
-        client.wait_for_result(rospy.Duration.from_sec(5.0))
+        client.wait_for_result()
     
     def photo(self, room: Room):
         rospy.loginfo("Taking photo in room: %s", room.get_name())
-        #TODO: Implement this function
+
+        self.go_to_room(room)
+
+        rospy.loginfo("Reached the room...")
+        client = actionlib.SimpleActionClient('take_photo', TakePhotoAction)
+        client.wait_for_server()
+
+        goal = TakePhotoGoal()
+        goal.room = room.get_name()
+        goal.stamp = rospy.Time.now()
+        client.send_goal(goal)
+        client.wait_for_result()
 
     def count(self, room: Room, object: Object):
         rospy.loginfo("Counting %s in room: %s", object.get_name(), room.get_name())
