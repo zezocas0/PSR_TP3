@@ -38,9 +38,6 @@ def image_callback(args, img_msg):
     bridge = args['bridge']
     pub = args['pub']
 
-    # log some info about the image topic
-    rospy.loginfo(img_msg.header)
-
     # Try to convert the ROS Image message to a CV2 Image
     try:
         cv_image = bridge.imgmsg_to_cv2(img_msg, desired_encoding="bgr8")
@@ -57,8 +54,9 @@ def image_callback(args, img_msg):
     
     # Show the image
     for obj in objects:
+        rospy.loginfo("Object: %s, Confidence: %s, Bounding Box: %s", obj[0], obj[1], obj[2])
         pub.publish(objects_message(obj))
-    show_image(image)
+    #show_image(image)
 
 
 def main():
@@ -79,7 +77,7 @@ def main():
 
 
     # Initialize an OpenCV Window
-    cv2.namedWindow("Image Window", 1)
+    # cv2.namedWindow("Image Window", 1)
 
 
 
