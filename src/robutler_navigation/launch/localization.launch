@@ -5,6 +5,9 @@
     <arg name="initial_pose_x" default="-3.0"/>
     <arg name="initial_pose_y" default="1.0"/>
     <arg name="initial_pose_a" default="0.0"/>
+    <arg name="cmd_vel_topic" default="/cmd_vel" />
+    <arg name="odom_topic" default="odom" />
+    <arg name="move_forward_only" default="false"/>
 
     <!-- Map server -->
     <arg name="map_file" default="$(find robutler_navigation)/maps/psr_apartment_map.yaml"/>
@@ -50,10 +53,10 @@
         <param name="odom_alpha3" value="0.1"/>
         <param name="odom_alpha4" value="0.1"/>
         <!-- <param name="odom_alpha1" value="0.005"/>
-<param name="odom_alpha2" value="0.005"/>
-<param name="odom_alpha3" value="0.010"/>
-<param name="odom_alpha4" value="0.005"/>
-<param name="odom_alpha5" value="0.003"/> -->
+        <param name="odom_alpha2" value="0.005"/>
+        <param name="odom_alpha3" value="0.010"/>
+        <param name="odom_alpha4" value="0.005"/>
+        <param name="odom_alpha5" value="0.003"/> -->
         <param name="odom_frame_id" value="odom"/>
         <param name="base_frame_id" value="base_footprint"/>
 
@@ -66,6 +69,20 @@
             <arg name="rviz_config" value="$(find i_rocs_navigation)/config/i_rocs_localization.rviz"/>
         </include>
     </group> -->
+
+    <!-- move_base -->
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+        <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
+        <rosparam file="$(find robutler_navigation)/param/costmap_common_params.yaml" command="load" ns="global_costmap" />
+        <rosparam file="$(find robutler_navigation)/param/costmap_common_params.yaml" command="load" ns="local_costmap" />
+        <rosparam file="$(find robutler_navigation)/param/local_costmap_params.yaml" command="load" />
+        <rosparam file="$(find robutler_navigation)/param/global_costmap_params.yaml" command="load" />
+        <rosparam file="$(find robutler_navigation)/param/move_base_params.yaml" command="load" />
+        <rosparam file="$(find robutler_navigation)/param/dwa_local_planner_params.yaml" command="load" />
+        <remap from="cmd_vel" to="$(arg cmd_vel_topic)"/>
+        <remap from="odom" to="$(arg odom_topic)"/>
+        <param name="DWAPlannerROS/min_vel_x" value="0.0" if="$(arg move_forward_only)" />
+    </node>
 
 
 </launch>
