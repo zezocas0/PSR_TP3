@@ -22,14 +22,43 @@ menu_entries = menu.markers[0].menu_entries
 
 menu_entries_processed = {}
 
-for object in menu_entries:
-    for i in menu_entries:
-        if i.id == object.parent_id:
-            room = i
-            for i in menu_entries:
-                if i.id == room.parent_id:
-                    action = i
-                    menu_entries_processed[object.id]={"action": action.title, "room": room.title, "object": object.title}
+actions = [x for x in menu_entries if x.parent_id == 0]
+
+rooms = []
+for i in menu_entries:
+    for j in actions:
+        if i.parent_id == j.id:
+            rooms.append(i)
+            break
+
+objects = []
+for i in menu_entries:
+    for j in rooms:
+        if i.parent_id == j.id:
+            objects.append(i)
+            break
+
+print(rooms)
+
+for i in objects:
+    _object = i
+    for i in rooms:
+        if i.id == _object.parent_id:
+            _room = i
+            for i in actions:
+                if i.id == _room.parent_id:
+                    _action = i
+                    menu_entries_processed[_object.id]={"action": _action.title, "room": _room.title, "object": _object.title}
                     break
+#remove all rooms from rooms that are in the menu_entries_processed
+for i in rooms:
+    if i.title in menu_entries_processed:
+        rooms.remove(i)
+for room in rooms:
+    for action in actions:
+        if action.id == room.parent_id:
+            menu_entries_processed[room.id]={"action": action.title, "room": room.title, "object": "Room"}
+            break
+        
 
 rospy.spin()
