@@ -4,6 +4,7 @@ import roslib
 roslib.load_manifest('robutler_controller')
 import rospy
 import actionlib
+import time
 from functools import partial
 from robutler_controller.msg import FindAction
 from robutler_vision.msg import DetectedObject
@@ -45,19 +46,23 @@ class FindServer:
   def find(self, goal):
     rospy.loginfo('Finding...')
 
+    start = time.time()
     while True:
         rotate(50)
         try:
             obj = rospy.wait_for_message("/vision/object_detection", DetectedObject, timeout=0.1)
             rospy.loginfo(f'Found {obj}')
+
+            #TODO: Handle objects being detected
             if goal.objectType == obj:
+                rotate(0)
                 break
+
         except rospy.ROSException:
-            continue
-
-    rospy.loginfo(f'Found {goal.objectType} in {goal.room}')
-
-
+            if time.time() - start > 60:
+                rospy.loginfo(f'Could not find {goal.objectType} in {goal.room}')
+                rotate(0)
+                break
 
 if __name__ == '__main__':
   rospy.init_node('find_server')
