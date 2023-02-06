@@ -1,0 +1,6 @@
+string room 
+time stamp
+---
+string photoPath
+---
+bool taken

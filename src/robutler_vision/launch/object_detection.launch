@@ -1,8 +1,0 @@
-<launch>
-    <node pkg="robutler_vision" name="camera_listener" type="camera.py" output="screen">
-        <param name="config_file" value="$(find robutler_vision)/scripts/YOLO/yolov3-tiny.cfg" />
-        <param name="weights_file" value="$(find robutler_vision)/scripts/YOLO/yolov3-tiny.weights" />
-        <param name="coco_names" value="$(find robutler_vision)/scripts/YOLO/coco.names" />
-    </node>
-</launch>
-  
