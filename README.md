@@ -23,7 +23,12 @@ The missions possible that can be done by the robot are the following:
 
 
 ### Rviz menu
-The rviz menu was implemented in order to make the actions of the robot easier to do, by implementing a interactive menu. This menu has movement options, and object detection options. 
+The rviz menu was implemented in order to make the actions of the robot easier to do, by implementing a interactive menu. This menu has several options, these include:
+- Going to a specific room. 
+- Taking a picture.
+- Finding a specific object in the map.
+- Looking for a specific object only in a certain room.
+
 
 
 ### Navigation
