@@ -31,13 +31,16 @@ def rotate(speed):
 def object_callback(args, msg):
     rospy.loginfo(msg)
 
-def object_detected(self, msg):
-    self.object = msg
 class FindServer:
   def __init__(self):
     self.server = actionlib.SimpleActionServer('find', FindAction, self.execute, False)
-    self.sub = rospy.Subscriber('/vision/object_detection', DetectedObject, partial(object_detected, self))
+    self.sub = rospy.Subscriber('/vision/object_detection', DetectedObject, self.object_detected)
     self.server.start()
+    self.object = None
+
+  def object_detected(self, msg):
+    rospy.loginfo(f'Object detected: {msg}')
+    self.object = msg
 
   def execute(self, goal):
     rospy.loginfo(f'Executing find {goal.objectType} in {goal.room}')
@@ -49,21 +52,21 @@ class FindServer:
     rospy.loginfo('Finding...')
 
     start = time.time()
-    rotate(50)
     while True:
-        try:
-            if goal.objectType == self.object:
-                rotate(0)
-                rospy.loginfo(f'Found {goal.objectType} in {goal.room}')
-                # send a success message to the server
-                self.server.set_succeeded()
-                break
+      rotate(50)
+      try:
+          if goal.objectType == self.object:
+              rotate(0)
+              rospy.loginfo(f'Found {goal.objectType} in {goal.room}')
+              # send a success message to the server
+              self.server.set_succeeded()
+              break
 
-        except rospy.ROSException:
-            if time.time() - start > 10:
-                rospy.loginfo(f'Could not find {goal.objectType} in {goal.room}')
-                rotate(0)
-                break
+      except rospy.ROSException:
+          if time.time() - start > 10:
+              rospy.loginfo(f'Could not find {goal.objectType} in {goal.room}')
+              rotate(0)
+              break
 
 if __name__ == '__main__':
   rospy.init_node('find_server')
