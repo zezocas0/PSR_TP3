@@ -84,24 +84,29 @@ for i in rooms:
 
 go_to_room = Actions_msg()
 go_to_room.action = 'go_to_room'
-go_to_room.only_rooms = True
-go_to_room.only_objects = False
+go_to_room.rooms = True
+go_to_room.objects = False
+go_to_room.colors = False
 
 
 photo = Actions_msg()
 photo.action = 'photo'
-photo.only_rooms = False
-photo.only_objects = False
+photo.rooms = True
+photo.objects = False
+photo.colors = False
 
 count = Actions_msg()
 count.action = 'count'
-count.only_rooms = False
-count.only_objects = True
+count.rooms = False
+count.objects = False
+count.colors = True
+
 
 find = Actions_msg()
 find.action = 'find'
-find.only_rooms = False
-find.only_objects = False
+find.rooms = False
+find.objects = True
+find.colors = False
 
 properties.actions = [go_to_room, photo, count, find]
 
