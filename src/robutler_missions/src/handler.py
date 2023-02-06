@@ -7,7 +7,7 @@ import actionlib
 from datetime import datetime
 from std_msgs.msg import String
 from robutler_missions.msg import Request
-from robutler_controller.msg import MoveRobutlerAction, MoveRobutlerGoal, TakePhotoAction, TakePhotoGoal
+from robutler_controller.msg import MoveRobutlerAction, MoveRobutlerGoal, TakePhotoAction, TakePhotoGoal, FindAction, FindGoal
 
 # from missions import Actions
 
@@ -86,8 +86,31 @@ class Actions:
         #TODO: Implement this function
     
     def find(self, room: Room, object: Object):
-        rospy.loginfo("Finding %s in room: %s", object.get_name(), room.get_name())
-        #TODO: Implement this function
+        rospy.loginfo("Finding %s in %s", object.get_name(), room.get_name())
+
+        rooms = [room]
+
+        if room.get_name() == "Everywhere":
+            order = ["Sala",  "Sanitario2", "Vestibulo2", "Sanitario1", "Escritorio",  "Quarto 2",  "Vestibulo1", "Quarto 1", "Cozinha"]
+            # order = order[order.index("Sanitario2"):] + order[:order.index("Sanitario2")]
+            rooms = [self.rooms[room_name] for room_name in order]
+
+        for room in rooms:
+            self.go_to_room(room)
+            rospy.loginfo(f"Reached {room.get_name()}...")
+
+            client = actionlib.SimpleActionClient('find', FindAction)
+            client.wait_for_server()
+
+            goal = FindGoal()
+            goal.room = room.get_name()
+            goal.objectType = object.get_name()
+            client.send_goal(goal)
+            client.wait_for_result()
+
+            #TODO: Stop searching when finding the object
+
+        
 
 
 '''----------------------------------------'''
@@ -121,13 +144,14 @@ def main():
         'Sala': Room('Sala', [-1.5000041812678986, -3.999997180836298]),
         'Cozinha': Room('Cozinha', [-3.0660901519164545, -0.8197685726438128]),
         'Vestibulo1': Room('Vestibulo1', [-3.0243864212170455, 1.6197764742613625]),
-        'Vestibulo2': Room('Vestibulo2', [-0.37422602677727357, -0.3219149936880148]),
+        'Vestibulo2': Room('Vestibulo2', [-0.44446241721503893, -0.438300400827369]),
         'Everywhere': Room('Everywhere', [0, 0])
     }
 
     rospy.init_node('message_handler', anonymous=True)
 
     actions = Actions()
+    actions.rooms = rooms
 
 
     # Subscribe to the mission topic and set callback function

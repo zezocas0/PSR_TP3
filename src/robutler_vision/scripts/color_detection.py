@@ -71,9 +71,6 @@ def image_callback(args, img_msg):
     bridge = args['bridge']
     pub = args['pub']
 
-    # log some info about the image topic
-    rospy.loginfo(img_msg.header)
-
     # Try to convert the ROS Image message to a CV2 Image
     try:
         cv_image = bridge.imgmsg_to_cv2(img_msg, desired_encoding="bgr8")
@@ -86,8 +83,9 @@ def image_callback(args, img_msg):
     print("--- %s seconds ---" % (time.time() - start))
 
     for centroid in centroids:
+        rospy.loginfo(f'Centroid: {centroid}')
         pub.publish(colors_message(centroid))
-    show_image(image)
+    # show_image(image)
 
 def main():
 
@@ -107,7 +105,7 @@ def main():
 
 
     # Initialize an OpenCV Window
-    cv2.namedWindow("Image Window", 1)
+    # cv2.namedWindow("Image Window", 1)
 
 
 

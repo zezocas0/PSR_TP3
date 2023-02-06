@@ -66,6 +66,7 @@ add_action_files(
   FILES
   MoveRobutler.action
   TakePhoto.action
+  Find.action
 )
 
 # Generate added messages and services with any dependencies listed here

@@ -1,0 +1,6 @@
+string room 
+string objectType
+---
+int32 num 
+---
+bool foundAny
