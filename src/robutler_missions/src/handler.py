@@ -181,7 +181,7 @@ def main():
     param_rooms = rospy.get_param("/rooms")
     rooms = {}
     for i in param_rooms:
-        rooms[i.name] = Room(i.name, i.coordinates)
+        rooms[i['name']] = Room(i['name'], i['coordinates'])
 
     rospy.init_node('message_handler', anonymous=True)
 
