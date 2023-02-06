@@ -7,7 +7,7 @@ import actionlib
 from datetime import datetime
 from std_msgs.msg import String
 from robutler_missions.msg import Request
-from robutler_controller.msg import MoveRobutlerAction, MoveRobutlerGoal, TakePhotoAction, TakePhotoGoal, FindAction, FindGoal
+from robutler_controller.msg import MoveRobutlerAction, MoveRobutlerGoal, TakePhotoAction, TakePhotoGoal, FindAction, FindGoal, CountAction, CountGoal
 
 # from missions import Actions
 
@@ -82,8 +82,28 @@ class Actions:
         client.wait_for_result()
 
     def count(self, room: Room, object: Object):
-        rospy.loginfo("Counting %s in room: %s", object.get_name(), room.get_name())
-        #TODO: Implement this function
+        rospy.loginfo("Counting %s in %s", object.get_name(), room.get_name())
+
+        rooms = [room]
+
+        if room.get_name() == "Everywhere":
+            order = ["Sala",  "Sanitario2", "Vestibulo2", "Sanitario1", "Escritorio",  "Quarto 2",  "Vestibulo1", "Quarto 1", "Cozinha"]
+            # order = order[order.index("Sanitario2"):] + order[:order.index("Sanitario2")]
+            rooms = [self.rooms[room_name] for room_name in order]
+
+        for room in rooms:
+            self.go_to_room(room)
+            rospy.loginfo(f"Reached {room.get_name()}...")
+
+            client = actionlib.SimpleActionClient('count', CountAction)
+            client.wait_for_server()
+
+            goal = CountGoal()
+            goal.room = room.get_name()
+            goal.objectType = object.get_name()
+            goal.color = "red" #TODO: Get Color Somehow
+            client.send_goal(goal)
+            client.wait_for_result()
     
     def find(self, room: Room, object: Object):
         rospy.loginfo("Finding %s in %s", object.get_name(), room.get_name())
