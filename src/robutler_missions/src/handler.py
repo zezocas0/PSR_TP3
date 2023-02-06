@@ -8,10 +8,8 @@ from datetime import datetime
 from std_msgs.msg import String
 from robutler_missions.msg import Request
 from robutler_controller.msg import MoveRobutlerAction, MoveRobutlerGoal, TakePhotoAction, TakePhotoGoal, FindAction, FindGoal, CountAction, CountGoal
+import geometry_msgs.msg
 
-# from missions import Actions
-
-'''TODO: LATER IMPORT THIS FROM missions.py FILE'''
 class Room:
     def __init__(self, name: str, coordinates: list):
         self.name = name
@@ -52,6 +50,28 @@ class Actions:
         object = Object(name, location, count)
         self.objects.append(object)
 
+    def get_closest_room(self):
+        order = ["Sala",  "Sanitario2", "Vestibulo2", "Sanitario1", "Escritorio",  "Quarto 2",  "Vestibulo1", "Quarto 1", "Cozinha"]
+        #get robot pose
+        pose = rospy.wait_for_message('/amcl_pose', geometry_msgs.msg.PoseWithCovarianceStamped, timeout=0.1)
+        x = pose.pose.pose.position.x
+        y = pose.pose.pose.position.y
+        
+        #get closest room
+        closest_room = None
+        for room in self.rooms:
+            room = self.rooms[room]
+            coordinates = room.coordinates
+            distance = ((coordinates[0] - x)**2 + (coordinates[1] - y)**2)**0.5
+            if closest_room is None or distance < closest_room[1]:
+                closest_room = (room, distance)
+        
+        # find index of closest room
+        index = order.index(closest_room[0].get_name())
+        # rotate order
+        new_order = order[index:] + order[:index]
+        return new_order
+
     def go_to_room(self, room: Room):
         rospy.loginfo("Going to room: %s", room.get_name())
 
@@ -87,8 +107,7 @@ class Actions:
         rooms = [room]
 
         if room.get_name() == "Everywhere":
-            order = ["Sala",  "Sanitario2", "Vestibulo2", "Sanitario1", "Escritorio",  "Quarto 2",  "Vestibulo1", "Quarto 1", "Cozinha"]
-            # order = order[order.index("Sanitario2"):] + order[:order.index("Sanitario2")]
+            order = self.get_closest_room()
             rooms = [self.rooms[room_name] for room_name in order]
 
         for room in rooms:
@@ -105,20 +124,20 @@ class Actions:
             client.send_goal(goal)
             client.wait_for_result()
     
+
+
     def find(self, room: Room, object: Object):
         rospy.loginfo("Finding %s in %s", object.get_name(), room.get_name())
 
         rooms = [room]
 
         if room.get_name() == "Everywhere":
-            order = ["Sala",  "Sanitario2", "Vestibulo2", "Sanitario1", "Escritorio",  "Quarto 2",  "Vestibulo1", "Quarto 1", "Cozinha"]
-            # order = order[order.index("Sanitario2"):] + order[:order.index("Sanitario2")]
+            order = self.get_closest_room()
             rooms = [self.rooms[room_name] for room_name in order]
 
         for room in rooms:
             self.go_to_room(room)
             rospy.loginfo(f"Reached {room.get_name()}...")
-
             client = actionlib.SimpleActionClient('find', FindAction)
             client.wait_for_server()
 
@@ -130,12 +149,11 @@ class Actions:
 
             #TODO: Stop searching when finding the object
 
-        
-
 
 '''----------------------------------------'''
 
 def msg_callback(args, msg):
+    rospy.loginfo("Received message: %s", msg)
     action_handler = args['actions']
     rooms = args['rooms']
 
@@ -154,19 +172,12 @@ def msg_callback(args, msg):
     else:
         rospy.loginfo("Action not supported")
 
+
 def main():
-    rooms ={
-        'Quarto 1': Room('Quarto 1', [-5.995157854315332, 3.0687534759343076]),
-        'Quarto 2': Room('Quarto 2', [-2.6291205565668005, 3.936978604700303]),
-        'Escritorio': Room('Escritorio', [0.3338533265150007, 3.8938500332742128]),
-        'Sanitario1': Room('Sanitario1', [0.6816980018583353, 0.9630639342257676]),
-        'Sanitario2': Room('Sanitario2', [1.7447975122639672, -1.4693745387618693]),
-        'Sala': Room('Sala', [-1.5000041812678986, -3.999997180836298]),
-        'Cozinha': Room('Cozinha', [-3.0660901519164545, -0.8197685726438128]),
-        'Vestibulo1': Room('Vestibulo1', [-3.0243864212170455, 1.6197764742613625]),
-        'Vestibulo2': Room('Vestibulo2', [-0.44446241721503893, -0.438300400827369]),
-        'Everywhere': Room('Everywhere', [0, 0])
-    }
+    param_rooms = rospy.get_param("/rooms")
+    rooms = {}
+    for i in param_rooms:
+        rooms[i['name']] = Room(i['name'], i['coordinates'])
 
     rospy.init_node('message_handler', anonymous=True)
 
@@ -175,7 +186,7 @@ def main():
 
 
     # Subscribe to the mission topic and set callback function
-    callback = rospy.Subscriber("/mission/requested", Request, partial(msg_callback, {'actions': actions, 'rooms': rooms}))
+    rospy.Subscriber("/mission/requested", Request, partial(msg_callback, {'actions': actions, 'rooms': rooms}))
 
 
 
