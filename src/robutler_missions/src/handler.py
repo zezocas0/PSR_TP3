@@ -10,10 +10,6 @@ from robutler_missions.msg import Request
 from robutler_controller.msg import MoveRobutlerAction, MoveRobutlerGoal, TakePhotoAction, TakePhotoGoal, FindAction, FindGoal, CountAction, CountGoal
 import geometry_msgs.msg
 
-
-# from missions import Actions
-
-'''TODO: LATER IMPORT THIS FROM missions.py FILE'''
 class Room:
     def __init__(self, name: str, coordinates: list):
         self.name = name
