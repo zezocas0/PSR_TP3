@@ -37,6 +37,7 @@ def image_callback(args, img_msg):
     yolo = args['yolo']
     bridge = args['bridge']
     pub = args['pub']
+    image_pub = args['image_pub']
 
     # Try to convert the ROS Image message to a CV2 Image
     try:
@@ -56,12 +57,12 @@ def image_callback(args, img_msg):
     for obj in objects:
         rospy.loginfo("Object: %s, Confidence: %s, Bounding Box: %s", obj[0], obj[1], obj[2])
         pub.publish(objects_message(obj))
-    #show_image(image)
+    image_pub.publish(bridge.cv2_to_imgmsg(image, "bgr8"))
 
 
 def main():
     pub = rospy.Publisher('/vision/object_detection', DetectedObject, queue_size=10)
-
+    image_pub = rospy.Publisher('vision/image_labels', Image,queue_size=10)
     rospy.init_node('camera_listener', anonymous=True)
     rospy.loginfo("Starting camera_listener node")
 
@@ -73,7 +74,7 @@ def main():
     yolo = YOLO(rospy.get_param("~config_file"), rospy.get_param("~weights_file"), rospy.get_param("~coco_names"))
 
     # Subscribe to the camera topic and set callback function
-    sub_image = rospy.Subscriber("/camera/rgb/image_raw", Image, partial(image_callback, {'yolo': yolo, 'bridge': bridge, 'pub': pub}))
+    sub_image = rospy.Subscriber("/camera/rgb/image_raw", Image, partial(image_callback, {'yolo': yolo, 'bridge': bridge, 'pub': pub, 'image_pub': image_pub}))
 
 
     # Initialize an OpenCV Window
