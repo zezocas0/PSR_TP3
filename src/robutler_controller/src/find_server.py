@@ -52,9 +52,9 @@ class FindServer:
         try:
             obj = rospy.wait_for_message("/vision/object_detection", DetectedObject, timeout=0.1)
 
-            #TODO: Handle objects being detected
             if goal.objectType == obj:
                 rotate(0)
+                rospy.loginfo(f'Found {goal.objectType} in {goal.room}')
                 break
 
         except rospy.ROSException:
