@@ -60,10 +60,6 @@ def process_image(image):
 
     return final_image, centroids
 
-# Define a function to show the image in an OpenCV Window
-def show_image(img):
-    cv2.imshow("Image Window", img)
-    cv2.waitKey(1)
 
 # Define the message to be published
 def colors_message(centroid):
@@ -78,6 +74,7 @@ def colors_message(centroid):
 def image_callback(args, img_msg):
     bridge = args['bridge']
     pub = args['pub']
+    image_pub = args['image_pub']
 
     # Try to convert the ROS Image message to a CV2 Image
     try:
@@ -93,7 +90,7 @@ def image_callback(args, img_msg):
     for centroid in centroids:
         rospy.loginfo(f'Centroid: {centroid}')
         pub.publish(colors_message(centroid))
-    #show_image(image)
+    image_pub.publish(bridge.cv2_to_imgmsg(image, "bgr8"))
 
 def main():
 
@@ -101,6 +98,7 @@ def main():
     rospy.loginfo("Starting camera_listener_color_detection node")
 
     pub = rospy.Publisher('/vision/color_detection', DetectedColor, queue_size=10)
+    image_pub = rospy.Publisher('vision/color_mask', Image, queue_size=10)
 
 
     # Get ROS parameters
@@ -109,11 +107,7 @@ def main():
     # Initialize the CvBridge class
     bridge = CvBridge()
     # Subscribe to the camera topic and set callback function
-    sub_image = rospy.Subscriber(camera_topic, Image, partial(image_callback, {'bridge': bridge, 'pub': pub}))
-
-
-    # Initialize an OpenCV Window
-    # cv2.namedWindow("Image Window", 1)
+    sub_image = rospy.Subscriber(camera_topic, Image, partial(image_callback, {'bridge': bridge, 'pub': pub, 'image_pub': image_pub}))
 
 
 
