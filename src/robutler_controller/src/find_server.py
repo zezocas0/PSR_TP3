@@ -31,10 +31,12 @@ def rotate(speed):
 def object_callback(args, msg):
     rospy.loginfo(msg)
 
-
+def object_detected(self, msg):
+    self.object = msg
 class FindServer:
   def __init__(self):
     self.server = actionlib.SimpleActionServer('find', FindAction, self.execute, False)
+    self.sub = rospy.Subscriber('/vision/object_detection', DetectedObject, partial(object_detected, self))
     self.server.start()
 
   def execute(self, goal):
@@ -47,12 +49,10 @@ class FindServer:
     rospy.loginfo('Finding...')
 
     start = time.time()
+    rotate(50)
     while True:
-        rotate(50)
         try:
-            obj = rospy.wait_for_message("/vision/object_detection", DetectedObject, timeout=0.1)
-
-            if goal.objectType == obj:
+            if goal.objectType == self.object:
                 rotate(0)
                 rospy.loginfo(f'Found {goal.objectType} in {goal.room}')
                 # send a success message to the server
