@@ -28,6 +28,8 @@ def process_image(image):
 
     color_ranges = getLimits()
 
+    mask = np.zeros(image.shape[:2], np.uint8)
+
     for color, range in color_ranges.items():
         min = range[0]
         max = range[1]
@@ -35,6 +37,9 @@ def process_image(image):
         image_thresh = cv2.inRange(image, min, max)
 
         image_thresh = cv2.dilate(image_thresh, None, iterations=10)
+        image_thresh = cv2.erode(image_thresh, None, iterations=10)
+
+        mask  += image_thresh
 
         
         # find contours in the binary image
@@ -49,9 +54,11 @@ def process_image(image):
 
             centroids.append((cX, cY, color))
 
-            cv2.circle(image, (cX, cY), 5, (255, 0, 0), -1)
+            cv2.circle(image, (cX, cY), 2, (255, 255, 255), -1)
 
-    return image_thresh, centroids
+    final_image = cv2.bitwise_and(image, image, mask=mask)
+
+    return final_image, centroids
 
 # Define a function to show the image in an OpenCV Window
 def show_image(img):
@@ -86,7 +93,7 @@ def image_callback(args, img_msg):
     for centroid in centroids:
         rospy.loginfo(f'Centroid: {centroid}')
         pub.publish(colors_message(centroid))
-    # show_image(image)
+    #show_image(image)
 
 def main():
 
