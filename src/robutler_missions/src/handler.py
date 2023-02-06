@@ -57,15 +57,15 @@ class Actions:
     def get_closest_room(self):
         order = ["Sala",  "Sanitario2", "Vestibulo2", "Sanitario1", "Escritorio",  "Quarto 2",  "Vestibulo1", "Quarto 1", "Cozinha"]
         #get robot pose
-        pose = rospy.wait_for_message('/robot_pose', geometry_msgs.msg.PoseWithCovarianceStamped)
+        pose = rospy.wait_for_message('/amcl_pose', geometry_msgs.msg.PoseWithCovarianceStamped, timeout=0.1)
         x = pose.pose.pose.position.x
         y = pose.pose.pose.position.y
         
         #get closest room
         closest_room = None
-
         for room in self.rooms:
-            coordinates = room.get_coordinates()
+            room = self.rooms[room]
+            coordinates = room.coordinates
             distance = ((coordinates[0] - x)**2 + (coordinates[1] - y)**2)**0.5
             if closest_room is None or distance < closest_room[1]:
                 closest_room = (room, distance)
@@ -142,7 +142,6 @@ class Actions:
         for room in rooms:
             self.go_to_room(room)
             rospy.loginfo(f"Reached {room.get_name()}...")
-
             client = actionlib.SimpleActionClient('find', FindAction)
             client.wait_for_server()
 
@@ -158,6 +157,7 @@ class Actions:
 '''----------------------------------------'''
 
 def msg_callback(args, msg):
+    rospy.loginfo("Received message: %s", msg)
     action_handler = args['actions']
     rooms = args['rooms']
 
@@ -190,7 +190,7 @@ def main():
 
 
     # Subscribe to the mission topic and set callback function
-    callback = rospy.Subscriber("/mission/requested", Request, partial(msg_callback, {'actions': actions, 'rooms': rooms}))
+    rospy.Subscriber("/mission/requested", Request, partial(msg_callback, {'actions': actions, 'rooms': rooms}))
 
 
 
