@@ -39,7 +39,7 @@ class FindServer:
     self.object = None
 
   def object_detected(self, msg):
-    rospy.loginfo(f'Object detected: {msg}')
+    #rospy.loginfo(f'Object detected: {msg}')
     self.object = msg
 
   def execute(self, goal):
@@ -55,18 +55,19 @@ class FindServer:
     while True:
       rotate(50)
       try:
-          if goal.objectType == self.object:
-              rotate(0)
-              rospy.loginfo(f'Found {goal.objectType} in {goal.room}')
-              # send a success message to the server
-              self.server.set_succeeded()
-              break
-
-      except rospy.ROSException:
-          if time.time() - start > 10:
-              rospy.loginfo(f'Could not find {goal.objectType} in {goal.room}')
-              rotate(0)
-              break
+        if goal.objectType == self.object:
+            rotate(0)
+            rospy.loginfo(f'Found {goal.objectType} in {goal.room}')
+            # send a success message to the server
+            self.server.set_succeeded()
+            break
+        if time.time() - start > 10:
+            rospy.loginfo(f'Could not find {goal.objectType} in {goal.room}')
+            rotate(0)
+            break
+      #none type error
+      except AttributeError:
+        pass
 
 if __name__ == '__main__':
   rospy.init_node('find_server')
