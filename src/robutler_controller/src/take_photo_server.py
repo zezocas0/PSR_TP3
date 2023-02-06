@@ -34,7 +34,7 @@ class TakePhotoServer:
     except CvBridgeError as e:
         rospy.logerr("CvBridge Error: {0}".format(e))
 
-    cv2.imwrite(f'~/.ros/{goal.room}:{goal.stamp}.png', image)
+    cv2.imwrite(f'{goal.room}:{goal.stamp}.png', image)
 
     rospy.loginfo(f'Saved image to ~/.ros/{goal.room}:{goal.stamp}.png')
 

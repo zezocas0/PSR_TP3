@@ -86,19 +86,27 @@ class Actions:
         #TODO: Implement this function
     
     def find(self, room: Room, object: Object):
-        rospy.loginfo("Finding %s in room: %s", object.get_name(), room.get_name())
+        rospy.loginfo("Finding %s in %s", object.get_name(), room.get_name())
 
-        self.go_to_room(room)
-        rospy.loginfo("Reached the room...")
+        rooms = [room]
 
-        client = actionlib.SimpleActionClient('find', FindAction)
-        client.wait_for_server()
+        if room.get_name() == "Everywhere":
+            order = ["Sala",  "Sanitario2", "Vestibulo2", "Sanitario1", "Escritorio",  "Quarto 2",  "Vestibulo1", "Quarto 1", "Cozinha"]
+            # order = order[order.index("Sanitario2"):] + order[:order.index("Sanitario2")]
+            rooms = [self.rooms[room_name] for room_name in order]
 
-        goal = FindGoal()
-        goal.room = room.get_name()
-        goal.objectType = object.get_name()
-        client.send_goal(goal)
-        client.wait_for_result()
+        for room in rooms:
+            self.go_to_room(room)
+            rospy.loginfo(f"Reached {room.get_name()}...")
+
+            client = actionlib.SimpleActionClient('find', FindAction)
+            client.wait_for_server()
+
+            goal = FindGoal()
+            goal.room = room.get_name()
+            goal.objectType = object.get_name()
+            client.send_goal(goal)
+            client.wait_for_result()
 
         
 
@@ -141,6 +149,7 @@ def main():
     rospy.init_node('message_handler', anonymous=True)
 
     actions = Actions()
+    actions.rooms = rooms
 
 
     # Subscribe to the mission topic and set callback function
