@@ -1,8 +1,17 @@
 objects: 
-    - "Cama"
-    - "Cadeira"
-    - "Mesa"
-    - "Room"
+    - "person"
+    - "vase"
+    - "bed"
+    - "sofa"
+    - "refrigerator"
+    - "diningtable"
+    - "pottedplant"
+    - "chair"
+    - "red-cube"
+    - "green-cube"
+    - "blue-cube"
+
+    
 rooms: 
         - { "name": "Quarto 1", "coordinates": [-5.995157854315332, 3.0687534759343076]}
         - { "name": "Quarto 2", "coordinates": [-2.6291205565668005, 3.936978604700303]}
@@ -14,4 +23,3 @@ rooms:
         - { "name": "Vestibulo1", "coordinates": [-3.0243864212170455, 1.6197764742613625]}
         - { "name": "Vestibulo2", "coordinates": [-0.44446241721503893, -0.438300400827369]}
         - {"name": "Everywhere", "coordinates": [0,0]}
- 

@@ -9,6 +9,7 @@ from functools import partial
 from robutler_controller.msg import CountAction
 from robutler_vision.msg import DetectedColor
 from geometry_msgs.msg import Twist
+from robutler_controller.action import CountAction
 PI = 3.1415926535897
 
 def rotate(speed):
@@ -45,15 +46,17 @@ class CountServer:
 
   def count(self, goal):
     rospy.loginfo('Counting...')
-
     start = time.time()
     while True:
         rotate(50)
         try:
             obj = rospy.wait_for_message("/vision/color_detection", DetectedColor, timeout=0.1)
             #TODO: deal with color object detected
-
-            rospy.loginfo(f'Found {goal.objectType} {goal.color} in {goal.room}')
+            if goal.objectType == obj:
+                    feedback = CountAction.Feedback()
+                    feedback.foundAny = True
+                    self.server.publish_feedback()
+                    rospy.loginfo(f'Found {goal.objectType} {goal.color} in {goal.room}')
 
         except rospy.ROSException:
             if time.time() - start > 10:
