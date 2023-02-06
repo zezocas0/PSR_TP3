@@ -83,9 +83,13 @@ def initMenu(properties):
     for action in properties.actions:
         entry = menu_handler.insert( action.action, callback=enableCb )
         for room in properties.rooms:
-            entry2 = menu_handler.insert( room.name, parent=entry, callback=enableCb )
-            for object in  properties.objects:
-                entry3 = menu_handler.insert( object.name, parent=entry2, callback=enableCb )
+            if not (action.only_rooms and room.name=="Everywhere"):
+                entry2 = menu_handler.insert( room.name, parent=entry, callback=enableCb )
+                print(action.action, action.only_rooms)
+                if not action.only_rooms:
+                    for object in  properties.objects:
+                        if not (action.only_objects and object.name=="Room"):
+                            entry3 = menu_handler.insert( object.name, parent=entry2, callback=enableCb )
 
 
 def loadOptions(args: robutler_missions.msg.Properties):
