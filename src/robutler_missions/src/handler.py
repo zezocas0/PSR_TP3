@@ -73,7 +73,7 @@ class Actions:
         return new_order
 
     def go_to_room(self, room: Room):
-        rospy.loginfo("Going to room: %s", room.get_name())
+        rospy.loginfo("Going to %s", room.get_name())
 
         client = actionlib.SimpleActionClient('move_robutler', MoveRobutlerAction)
         client.wait_for_server()
@@ -153,12 +153,16 @@ class Actions:
 '''----------------------------------------'''
 
 def msg_callback(args, msg):
-    rospy.loginfo("Received message: %s", msg)
+
     action_handler = args['actions']
     rooms = args['rooms']
 
+
     action = msg.action
-    room = rooms[msg.room]
+    if "specific location" in msg.room:
+        room = Room("Specific Location", [float(msg.room.split(":")[1]), float(msg.room.split(":")[2])])
+    else:
+        room = rooms[msg.room]
     obj = Object(msg.object)
 
     if action == "go_to_room":
