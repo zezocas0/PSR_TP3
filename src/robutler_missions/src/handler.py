@@ -108,6 +108,8 @@ class Actions:
             client.send_goal(goal)
             client.wait_for_result()
 
+            #TODO: Stop searching when finding the object
+
         
 
 
