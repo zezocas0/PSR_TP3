@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import random
+import sys
 
 import rospy
 import rospkg
@@ -22,18 +23,45 @@ placements.append({'pose':Pose(position=Point(x=-7.33, y=5.29, z=0.58), orientat
               'room':'large_bedroom', 'place': 'bedside_cabinet'})
 
 
-model_names = ['sphere_v']
+model_names = ['blue_cube', 'green_cube', 'red_cube']
 
-# Add here several models. All should be added to the robutler_description package
-model_name = random.choice(model_names)
+places = ["In the bed of the large bedroom", "In the living room shelf"]
 
-f = open( package_path + model_name + '/model.sdf' ,'r')
-sdff = f.read()
+while True:
+    if len(places) == 0:
+        print("There is nothing more you can do")
+        sys.exit(0)
+    print("\n\nWhere do you want to place some colores cubes?\n")
+    for i in range(len(places)):
+        print(str(i+1) + ") " + places[i])
+    print("0) to exit\n")
 
-rospy.wait_for_service('gazebo/spawn_sdf_model')
-spawn_model_prox = rospy.ServiceProxy('gazebo/spawn_sdf_model', SpawnModel)
+    place_idx = int(input("Enter the number of the place: "))
+
+    if place_idx == 0:
+        print("Exiting...")
+        sys.exit(0)
+    
+    if place_idx < 0 or place_idx > len(placements):
+        print("Invalid place number")
+        continue
+
+    place = places.pop(place_idx-1)
+
+    print(place)
+    continue
 
 
-model_placement = random.choice(placements)
-name = model_name + '_in_' + model_placement['place'] + '_of_' + model_placement['room']
-spawn_model_prox(name, sdff, model_name, model_placement['pose'], "world")
+    # Add here several models. All should be added to the robutler_description package
+    model_name = random.choice(model_names)
+
+    f = open( package_path + model_name + '/model.sdf' ,'r')
+    sdff = f.read()
+
+    rospy.wait_for_service('gazebo/spawn_sdf_model')
+    spawn_model_prox = rospy.ServiceProxy('gazebo/spawn_sdf_model', SpawnModel)
+
+
+    model_placement = random.choice(placements)
+    name = model_name + '_in_' + model_placement['place'] + '_of_' + model_placement['room']
+    spawn_model_prox(name, sdff, model_name, model_placement['pose'], "world")
