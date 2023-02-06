@@ -19,22 +19,28 @@ The missions possible that can be done by the robot are the following:
 3. Find objects of a specific color
 4. Categotize objects based on their caracteristics
 5. Try and find objects in the map
-6. 
+ 
 
 
 ### Rviz menu
-
-
-
+The rviz menu was implemented in order to make the actions of the robot easier to do, by implementing a interactive menu. This menu has movement options, and object detection options. 
 
 
 ### Navigation
+For the robot to navigate the map, it uses the map and uses the same method for all the movements and finds the shortest distance to that position, taking into consideration the obstacles and the safe distace from them, therefore moving in a safe way. 
 
 
 ### Mapping
+The mapping of the apartment was recorded using SLAM to a `.pmg` file, whitch is afterwards launched in the `navigation.launch` on the robutler_bringup package. This launch file also contains the particle filter, whitch is only used when the robot doesnt know its position, after being moved or after a reset.
 
+[exemplo de imagem do rviz com o mapa e filtro de particulas a funcionar]
 
 ### Object Spawning
+Due to one of the missions being the usage of finding certaint objecs on the apartment. The usage of a object spawner was implemented, so that the robot could spawn objects in the map, in order to test the object detection program and its navigations skills.
+
+
+
+
 ### Teleoperation
 Due to our use of the teleoperation was use only initially and while testing and while debugging, the `rqt_robot_steering` plugin was originally used, however the `keyboard_teleop.launch` is a more simple and usable version, used from the turtlebot_teleop package.
 
@@ -53,7 +59,6 @@ On the image below we can see the results of the `object_detection.py` program, 
 
 <img src="docs/vision.jpeg" alt="Cv and yolo programs working" width="500"
 />
-
 
 
 
