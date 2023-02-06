@@ -55,6 +55,8 @@ class FindServer:
             if goal.objectType == obj:
                 rotate(0)
                 rospy.loginfo(f'Found {goal.objectType} in {goal.room}')
+                # send a success message to the server
+                self.server.set_succeeded()
                 break
 
         except rospy.ROSException:
