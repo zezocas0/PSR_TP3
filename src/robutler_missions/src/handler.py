@@ -134,7 +134,7 @@ def main():
         'Sala': Room('Sala', [-1.5000041812678986, -3.999997180836298]),
         'Cozinha': Room('Cozinha', [-3.0660901519164545, -0.8197685726438128]),
         'Vestibulo1': Room('Vestibulo1', [-3.0243864212170455, 1.6197764742613625]),
-        'Vestibulo2': Room('Vestibulo2', [-0.37422602677727357, -0.3219149936880148]),
+        'Vestibulo2': Room('Vestibulo2', [-0.44446241721503893, -0.438300400827369]),
         'Everywhere': Room('Everywhere', [0, 0])
     }
 
