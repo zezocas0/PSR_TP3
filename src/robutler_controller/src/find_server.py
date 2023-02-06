@@ -55,7 +55,7 @@ class FindServer:
     while True:
       rotate(50)
       try:
-        if goal.objectType == self.object:
+        if goal.objectType == self.object.class_name:
             rotate(0)
             rospy.loginfo(f'Found {goal.objectType} in {goal.room}')
             # send a success message to the server
