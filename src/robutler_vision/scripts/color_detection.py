@@ -17,9 +17,9 @@ from cv_bridge import CvBridge, CvBridgeError
 
 def getLimits():
     return {
-        'blue': (np.array([225, 0, 0], np.uint8), np.array([255, 30, 30], np.uint8)),
-        'green': (np.array([0, 161, 0], np.uint8), np.array([30, 221, 30], np.uint8)),
-        'red': (np.array([0, 0, 225], np.uint8), np.array([30, 30, 255], np.uint8)),
+        'blue': (np.array([76, 0, 0], np.uint8), np.array([136, 30, 30], np.uint8)),
+        'green': (np.array([0, 75, 0], np.uint8), np.array([30, 135, 30], np.uint8)),
+        'red': (np.array([0, 0, 74], np.uint8), np.array([30, 30, 134], np.uint8)),
     }
 
 def process_image(image):
@@ -34,6 +34,9 @@ def process_image(image):
 
         image_thresh = cv2.inRange(image, min, max)
 
+        image_thresh = cv2.dilate(image_thresh, None, iterations=10)
+
+        
         # find contours in the binary image
         contours, hierarchy = cv2.findContours(image_thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
         for c in contours:
