@@ -86,7 +86,7 @@ def image_callback(args, img_msg):
     for centroid in centroids:
         rospy.loginfo(f'Centroid: {centroid}')
         pub.publish(colors_message(centroid))
-    show_image(image)
+    # show_image(image)
 
 def main():
 
