@@ -16,51 +16,55 @@ import cv2
 from cv_bridge import CvBridge, CvBridgeError
 
 def getLimits():
-    min_b = rospy.get_param('~min_b', 0)
-    min_g = rospy.get_param('~min_g', 0)
-    min_r = rospy.get_param('~min_r', 0)
-
-    max_b = rospy.get_param('~max_b', 255)
-    max_g = rospy.get_param('~max_g', 255)
-    max_r = rospy.get_param('~max_r', 255)
-
-    min = np.array([min_b, min_g, min_r], np.uint8)
-    max = np.array([max_b, max_g, max_r], np.uint8)
-
-    return min, max
+    return {
+        'blue': (np.array([76, 0, 0], np.uint8), np.array([136, 30, 30], np.uint8)),
+        'green': (np.array([0, 75, 0], np.uint8), np.array([30, 135, 30], np.uint8)),
+        'red': (np.array([0, 0, 74], np.uint8), np.array([30, 30, 134], np.uint8)),
+    }
 
 def process_image(image):
 
     centroids = []
 
-    min, max = getLimits()
+    color_ranges = getLimits()
 
-    image = cv2.inRange(image, min, max)
+    mask = np.zeros(image.shape[:2], np.uint8)
 
-    # find contours in the binary image
-    contours, hierarchy = cv2.findContours(image,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
-    for c in contours:
-        # calculate moments for each contour
-        M = cv2.moments(c)
+    for color, range in color_ranges.items():
+        min = range[0]
+        max = range[1]
+
+        image_thresh = cv2.inRange(image, min, max)
+
+        image_thresh = cv2.dilate(image_thresh, None, iterations=10)
+        image_thresh = cv2.erode(image_thresh, None, iterations=10)
+
+        mask  += image_thresh
+
         
-        # calculate x,y coordinate of center
-        cX = int(M["m10"] / M["m00"]) if M["m00"] > 0 else 0
-        cY = int(M["m01"] / M["m00"]) if M["m00"] > 0 else 0
+        # find contours in the binary image
+        contours, hierarchy = cv2.findContours(image_thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+        for c in contours:
+            # calculate moments for each contour
+            M = cv2.moments(c)
+            
+            # calculate x,y coordinate of center
+            cX = int(M["m10"] / M["m00"]) if M["m00"] > 0 else 0
+            cY = int(M["m01"] / M["m00"]) if M["m00"] > 0 else 0
 
-        centroids.append((cX, cY))
+            centroids.append((cX, cY, color))
 
-        cv2.circle(image, (cX, cY), 5, (255, 0, 0), -1)
+            cv2.circle(image, (cX, cY), 2, (255, 255, 255), -1)
 
-    return image, centroids
+    final_image = cv2.bitwise_and(image, image, mask=mask)
 
-# Define a function to show the image in an OpenCV Window
-def show_image(img):
-    cv2.imshow("Image Window", img)
-    cv2.waitKey(1)
+    return final_image, centroids
+
 
 # Define the message to be published
 def colors_message(centroid):
     msg = DetectedColor()
+    msg.polygon = centroid[2]
     msg.x = centroid[0]
     msg.y = centroid[1]
 
@@ -70,6 +74,7 @@ def colors_message(centroid):
 def image_callback(args, img_msg):
     bridge = args['bridge']
     pub = args['pub']
+    image_pub = args['image_pub']
 
     # Try to convert the ROS Image message to a CV2 Image
     try:
@@ -85,7 +90,7 @@ def image_callback(args, img_msg):
     for centroid in centroids:
         rospy.loginfo(f'Centroid: {centroid}')
         pub.publish(colors_message(centroid))
-    # show_image(image)
+    image_pub.publish(bridge.cv2_to_imgmsg(image, "bgr8"))
 
 def main():
 
@@ -93,6 +98,7 @@ def main():
     rospy.loginfo("Starting camera_listener_color_detection node")
 
     pub = rospy.Publisher('/vision/color_detection', DetectedColor, queue_size=10)
+    image_pub = rospy.Publisher('vision/color_mask', Image, queue_size=10)
 
 
     # Get ROS parameters
@@ -101,11 +107,7 @@ def main():
     # Initialize the CvBridge class
     bridge = CvBridge()
     # Subscribe to the camera topic and set callback function
-    sub_image = rospy.Subscriber(camera_topic, Image, partial(image_callback, {'bridge': bridge, 'pub': pub}))
-
-
-    # Initialize an OpenCV Window
-    # cv2.namedWindow("Image Window", 1)
+    sub_image = rospy.Subscriber(camera_topic, Image, partial(image_callback, {'bridge': bridge, 'pub': pub, 'image_pub': image_pub}))
 
 
 

@@ -31,37 +31,48 @@ def rotate(speed):
 def object_callback(args, msg):
     rospy.loginfo(msg)
 
-
 class FindServer:
   def __init__(self):
     self.server = actionlib.SimpleActionServer('find', FindAction, self.execute, False)
+    self.sub = rospy.Subscriber('/vision/object_detection', DetectedObject, self.object_detected)
     self.server.start()
+    self.object = None
+
+  def object_detected(self, msg):
+    #rospy.loginfo(f'Object detected: {msg}')
+    self.object = msg
 
   def execute(self, goal):
     rospy.loginfo(f'Executing find {goal.objectType} in {goal.room}')
     self.find(goal)
-    self.server.set_succeeded()
-
 
   def find(self, goal):
     rospy.loginfo('Finding...')
-
+    self.object = None
+    self.done = False
     start = time.time()
     while True:
-        rotate(50)
-        try:
-            obj = rospy.wait_for_message("/vision/object_detection", DetectedObject, timeout=0.1)
+      rotate(50)
+      try:
+        if goal.objectType == self.object.class_name:
+            rotate(0)
+            rospy.loginfo(f'Found {goal.objectType} in {goal.room}')
+            # send a success message to the server
+            break
+        if time.time() - start > 10:
+            rospy.loginfo(f'Could not find {goal.objectType} in {goal.room}')
+            rotate(0)
+            break
+      #none type error
+      except AttributeError:
+        pass
 
-            if goal.objectType == obj:
-                rotate(0)
-                rospy.loginfo(f'Found {goal.objectType} in {goal.room}')
-                break
+    if self.done:
+      self.server.set_succeeded(True, f'Found {goal.objectType} in {goal.room}')
+    else:
+      self.server.set_succeeded(False, f'Could not find {goal.objectType} in {goal.room}')
 
-        except rospy.ROSException:
-            if time.time() - start > 10:
-                rospy.loginfo(f'Could not find {goal.objectType} in {goal.room}')
-                rotate(0)
-                break
+
 
 if __name__ == '__main__':
   rospy.init_node('find_server')

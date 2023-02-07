@@ -1,0 +1,1 @@
+rosrun psr_apartment_description spawn_object.py
