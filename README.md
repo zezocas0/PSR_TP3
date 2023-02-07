@@ -13,7 +13,7 @@
 * [Overview](#overview)
 * [Setting up](#setup)
 * [How to use](#how-to-use)
-
+* [Vision](#vision)
 
 
 ## Overview
@@ -53,6 +53,27 @@ export TURTLEBOT3_MODEL=waffle_pi
   <img src='docs/menu.jpeg' width='300'>
   - This menu is automatically populated by the contents of properties.yaml, how the menu is populated can be restricted based on the type of mission
 
+
+## Vision
+The vision system uses YOLO3-Tiny as demonstrated it has a better cost to performance ratio and is more suitable on minimal hardware 
+[[1]](https://arxiv.org/pdf/1807.05597.pdf)
+
+
+## Mapping Localization and planning
+amcl takes in a laser-based map, laser scans, and transform messages, and outputs pose estimates.
+amcl is a probabilistic localization system for a robot moving in 2D. It implements the adaptive (or KLD-sampling) Monte Carlo localization approach (as described by Dieter Fox), which uses a particle filter to track the pose of a robot against a known map.[[2]](http://wiki.ros.org/amcl)
+
+![Video of movement](docs/navigation.gif)
+
+For path planning and navigation, the ROS navigation stack is used with the implemented action server `move_base`. [[3]](http://wiki.ros.org/move_base)
+
+<!-- two image table -->
+Navigation Stack           |  Navigation Behaviour
+:-------------------------:|:-------------------------:
+![](docs/navigation%20stack.png)  |  ![](docs/nav_behaviour.png)
+
+
+#
 
 For ease of use, we created launch files to launch of the packages, mostly for the manual testing of the programs. 
 Here is a lisf of the launch files used, their packages and their functions:
