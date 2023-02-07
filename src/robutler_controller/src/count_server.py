@@ -44,52 +44,96 @@ class CountServer:
     self.color = msg
 
   def execute(self, goal):
-    rospy.loginfo(f'Counting {goal.objectType} in {goal.room}')
+    rospy.loginfo(f'Counting {goal.color} in {goal.room}')
     self.count(goal)
     self.server.set_succeeded()
 
 
   def count(self, goal):
     rospy.loginfo('Counting...')
-    start = time.time()
     num = 0
 
-    visited = []
 
-    #rotation = 0º
-    while True:
-      try:
-        if goal.color == self.color.polygon:
-          self.color = None
-          if (goal.x, goal.y) in visited:
+    for _ in range(4):
+      self.color = None
+      visited = []
+      start = time.time()
+
+      while True:
+        if time.time() - start > 3:
             break
-          visited.append((goal.x, goal.y))
-          num += 1
-          rospy.loginfo(f'Found {goal.objectType} {goal.color} in {goal.room}')
+        try:
+          if goal.color == self.color.polygon:
+            print("Here")
+            if [(self.color.x + offset, self.color.y + offset) for offset in range(-30, 30)] in visited:
+              break
+            print("after break")
+            visited.append((self.color.x,  self.color.y))
+            num += 1
+            print("num: ", num)
+            rospy.loginfo(f'Found {goal.objectType} {goal.color} in {goal.room}')
+            self.color = None
 
-      except AttributeError:
-        continue
+        except AttributeError as e :
+
+          if "NoneType" not in str(e):
+            print(e)
+          continue
+
+      rospy.loginfo(f'Found {num} {goal.objectType}s so far')
+
+      #rotate 30º
+      start = time.time()
+
+      now = time.time()
+      while now - start < 2:
+        rotate(50)
+        now = time.time()
+
+      rotate(0)
+
+    # visited = []
+    # start = time.time()
+    # #rotation ~ 30º
+    # while True:
+    #   if time.time() - start > 3:
+    #       break
+    #   try:
+    #     if goal.color == self.color.polygon:
+    #       self.color = None
+    #       if (self.color.x, self.color.y) in visited:
+    #         rospy.loginfo('Already counted this object')
+    #         break
+    #       visited.append((self.color.x, self.color.y))
+    #       rospy.loginfo(f'Found {goal.objectType} {goal.color} in {goal.room}')
+    #       num += 1
+    #       print("num: ",num)
+
+    #   except AttributeError as e:
+    #     continue
+    
+    # rospy.loginfo(f'Found {num} {goal.objectType}s so far')
+
+    # #rotate 45º
+    # start = time.time()
+
+    # now = time.time()
+    # while now - start < 2:
+    #   rotate(50)
+    #   now = time.time()
+
+    # rotate(0)
 
 
-      print(time.time() - start)
-      if time.time() - start > 3:
-          break
-
-    #rotate 45º
-    start = time.time()
-
-    while time.time() - start > 10:
-      print("Rotating...")
-      rotate(50)
-
-
-
+    feedback = CountFeedback()
     if num > 0:
-      feedback = CountFeedback()
       feedback.foundAny = True
       self.server.publish_feedback(feedback)
       result = CountResult()
       result.num = num
+    else:
+      feedback.foundAny = False
+      self.server.publish_feedback(feedback)
 
     # while True:
     #     rotate(50)
