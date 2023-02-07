@@ -83,13 +83,36 @@ def initMenu(properties):
     for action in properties.actions:
         entry = menu_handler.insert( action.action, callback=enableCb )
         for room in properties.rooms:
-            if not (action.only_rooms and room.name=="Everywhere"):
+            if action.rooms and not action.objects and not action.colors:
+                #photos and goto
+                if room.name!="Everywhere":
+                    entry2 = menu_handler.insert( room.name, parent=entry, callback=enableCb )
+            elif action.objects and not action.colors:
+                #find:
                 entry2 = menu_handler.insert( room.name, parent=entry, callback=enableCb )
-                print(action.action, action.only_rooms)
-                if not action.only_rooms:
-                    for object in  properties.objects:
-                        if not (action.only_objects and object.name=="Room"):
-                            entry3 = menu_handler.insert( object.name, parent=entry2, callback=enableCb )
+                for object in properties.objects:
+                    if "cube" not in object.name:
+                        entry3 = menu_handler.insert( object.name, parent=entry2, callback=enableCb )
+            elif action.colors and not action.objects:
+                entry2 = menu_handler.insert( room.name, parent=entry, callback=enableCb )
+                for object in properties.objects:
+                    if "cube" in object.name:
+                        entry3 = menu_handler.insert( object.name, parent=entry2, callback=enableCb )
+
+
+
+
+
+            # if not ((not action.rooms and not action.colors) and room.name=="Everywhere"):
+            #     entry2 = menu_handler.insert( room.name, parent=entry, callback=enableCb )
+            #     if action.objects:
+            #         for object in properties.objects:
+
+            #             if not ((action.objects or action.colors and not action.rooms )and object.name=="Room"):
+            #                 if action.objects and "cube" not in object.name:  
+            #                     entry3 = menu_handler.insert( object.name, parent=entry2, callback=enableCb )
+            #                 if action.colors and "cube" in object.name:
+            #                     entry3 = menu_handler.insert( object.name, parent=entry2, callback=enableCb )
 
 
 def loadOptions(args: robutler_missions.msg.Properties):
