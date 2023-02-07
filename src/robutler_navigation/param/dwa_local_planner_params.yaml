@@ -33,6 +33,7 @@ DWAPlannerROS:
   vth_samples: 40
   #controller_frequency: 10.0
   controller_frequency: 4.0
+  sim_granularity: 0.025
 
 # Trajectory Scoring Parameters
   path_distance_bias: 32.0

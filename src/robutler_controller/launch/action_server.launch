@@ -1,0 +1,6 @@
+<launch>
+    <node pkg="robutler_controller" type="move_robutler_server.py" name="move_robutler" output="screen"/>
+    <node pkg="robutler_controller" type="take_photo_server.py" name="take_photo" output="screen"/>
+    <node pkg="robutler_controller" type="find_server.py" name="find" output="screen"/>
+    <node pkg="robutler_controller" type="count_server.py" name="count" output="screen"/> 
+</launch>

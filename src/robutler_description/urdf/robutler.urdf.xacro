@@ -186,12 +186,62 @@
     </inertial>
   </link>
 
-  <joint name="camera_joint" type="fixed">
-    <!-- <origin xyz="0.073 -0.011 0.084" rpy="0 0 0"/> -->
-    <origin xyz="0.073 -0.011 1" rpy="0 0 0"/>
+
+
+
+  
+  <joint name="antenna_for_camera" type="fixed">
     <parent link="base_link"/>
-    <child link="camera_link"/>
+    <child link="antenna_link"/>
+    <axis xyz="0 1 0"/>
+    <origin xyz="-0.1325 0 0.09" rpy="0 0 0"/>
   </joint>
+
+  <!-- base / tube of the antenna -->
+  <link name="antenna_link">
+    <visual>
+      <origin xyz="0 0 0.75" rpy="0 0 0"/>
+      <geometry>
+        <cylinder length="1.5" radius="0.003"/>
+      </geometry>
+      <material name="dark"/>
+    </visual>
+    
+  </link>
+
+  <!-- top of the antenna -->
+  <link name="antena_camera_link">
+      <visual>
+        <origin xyz="0 0 0 " rpy="0 0 0"/>
+        <geometry>
+          <sphere radius="0.01"/>
+        </geometry>
+      </visual>
+
+  </link>
+
+
+  <!-- joint between the top of the antenna and the camera joints -->
+ <joint name="antenna_camera_joint" type="fixed">
+    <parent link="antenna_link"/>
+    <child link="antena_camera_link"/>
+    <origin xyz="0 0 1.5" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+
+  <joint name="camera_joint_antena" type="fixed">
+    <parent link="antena_camera_link"/>
+    <child link="camera_link"/>
+    <axis xyz="0 0 1 " />
+    <origin xyz="0 0 0 " rpy="0 0 0"/>
+  </joint>
+
+
+
+
+  <!-- camera links, joints and camera params  -->
+  
 
   <link name="camera_link">
     <collision>
@@ -203,11 +253,11 @@
   </link>
 
   <joint name="camera_rgb_joint" type="fixed">
-    <origin xyz="0.003 0.011 0.009" rpy="0 0 0"/>
+    <origin xyz="0.003 0.011 0.009" rpy="0  0.174532925 0"/>
     <parent link="camera_link"/>
     <child link="camera_rgb_frame"/>
   </joint>
-  <link name="camera_rgb_frame"/>
+  <link name="camera_rgb_frame" />
 
   <joint name="camera_rgb_optical_joint" type="fixed">
     <origin xyz="0 0 0" rpy="-1.57 0 -1.57"/>
@@ -215,5 +265,8 @@
     <child link="camera_rgb_optical_frame"/>
   </joint>
   <link name="camera_rgb_optical_frame"/>
+
+
+
 
 </robot>
