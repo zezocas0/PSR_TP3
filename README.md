@@ -3,8 +3,8 @@
 <!-- Create table -->
 | Nome                      | e-mail          | Nºmec |
 | ------------------------ | -------------- | -------- |
-| Henrique Sousa | henrique@ua.pt | 987652|
-| José Santos | josesousa@ua.pt |987652|
+| Henrique Sousa | henrique@ua.pt | 98324|
+| José Santos | josesantos01@ua.pt |98279|
 |Roberto Figueiredo |robertof@ua.pt| 116147|
 
 ---
