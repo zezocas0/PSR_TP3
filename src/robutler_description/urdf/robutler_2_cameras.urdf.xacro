@@ -2,7 +2,11 @@
 <robot name="turtlebot3_waffle_pi" xmlns:xacro="http://ros.org/wiki/xacro">
   <xacro:include filename="$(find robutler_description)/urdf/common_properties.xacro"/>
   <xacro:include filename="$(find robutler_description)/urdf/robutler.gazebo.xacro"/>
+  <!--
+    This file is to display the extra camera in use in the robutler robot. However, not double cameras are used to do any functions, only one
+      making this urdf file not usable in our main project.
 
+    -->
   <link name="base_footprint"/>
 
   <joint name="base_joint" type="fixed">
@@ -186,6 +190,35 @@
     </inertial>
   </link>
 
+  <joint name="camera_joint" type="fixed">
+    <origin xyz="0.073 -0.011 0.084" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="camera_link"/>
+  </joint>
+
+  <link name="camera_link">
+    <collision>
+      <origin xyz="0.005 0.011 0.013" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.015 0.030 0.027"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="camera_rgb_joint" type="fixed">
+    <origin xyz="0.003 0.011 0.009" rpy="0 0 0"/>
+    <parent link="camera_link"/>
+    <child link="camera_rgb_frame"/>
+  </joint>
+  <link name="camera_rgb_frame"/>
+
+  <joint name="camera_rgb_optical_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="-1.57 0 -1.57"/>
+    <parent link="camera_rgb_frame"/>
+    <child link="camera_rgb_optical_frame"/>
+  </joint>
+  <link name="camera_rgb_optical_frame"/>
+
 
 
 
@@ -214,7 +247,7 @@
       <visual>
         <origin xyz="0 0 0 " rpy="0 0 0"/>
         <geometry>
-          <sphere radius="0.01"/>
+          <sphere radius="0.001"/>
         </geometry>
       </visual>
 
@@ -230,9 +263,9 @@
   </joint>
 
 
-  <joint name="camera_joint_antena" type="fixed">
+  <joint name="camera_joint_a" type="fixed">
     <parent link="antena_camera_link"/>
-    <child link="camera_link"/>
+    <child link="camera_link_a"/>
     <axis xyz="0 0 1 " />
     <origin xyz="0 0 0 " rpy="0 0 0"/>
   </joint>
@@ -241,31 +274,49 @@
 
 
   <!-- camera links, joints and camera params  -->
-  
-
-  <link name="camera_link">
-    <collision>
-      <origin xyz="0.005 0.011 0.013" rpy="0 0 0"/>
-      <geometry>
-        <box size="0.015 0.030 0.027"/>
-      </geometry>
-    </collision>
+  <link name="camera_link_a">
+    <visual>
+        <geometry>
+            <sphere radius="0.01"/>
+        </geometry>
+        <material name="red"/>
+    </visual>
   </link>
-
-  <joint name="camera_rgb_joint" type="fixed">
-    <origin xyz="0.003 0.011 0.009" rpy="0  0.174532925 0"/>
-    <parent link="camera_link"/>
-    <child link="camera_rgb_frame"/>
+  <joint name="camera_optical_joint" type="fixed">
+      <parent link="camera_link_a"/>
+      <child link="camera_link_optical"/>
+      <axis xyz="0 0 1"/>
+      <origin xyz="0 0 0" rpy= "-1.57 0 -1.57"/>
+      
   </joint>
-  <link name="camera_rgb_frame" />
+  <!-- "${-pi/2} 0 ${-pi/2}" -->
+  <link name="camera_link_optical"></link>
 
-  <joint name="camera_rgb_optical_joint" type="fixed">
-    <origin xyz="0 0 0" rpy="-1.57 0 -1.57"/>
-    <parent link="camera_rgb_frame"/>
-    <child link="camera_rgb_optical_frame"/>
-  </joint>
-  <link name="camera_rgb_optical_frame"/>
 
+  <gazebo reference="camera_link_a">
+      <material>Gazebo/Red</material>
+              
+        <sensor name="camera" type="camera">
+            <pose> 0 0 0 0 0 0 </pose>
+            <!-- <visualize>true</visualize> -->
+            <update_rate>60</update_rate>
+            <camera>
+                <horizontal_fov>1.089</horizontal_fov>
+                <image>
+                    <format>R8G8B8</format>
+                    <width>640</width>
+                    <height>480</height>
+                </image>
+                <clip>
+                    <near>0.05</near>
+                    <far>8.0</far>
+                </clip>
+            </camera>
+            <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+                <frame_name>camera_link_optical</frame_name>
+            </plugin>
+        </sensor>
+  </gazebo>
 
 
 
