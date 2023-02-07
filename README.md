@@ -26,7 +26,6 @@
     - [Mapping](#mapping)
     - [Object Spawning](#object-spawning)
     - [Teleoperation](#teleoperation)
-    - [Vision](#vision-1)
     - [Robot changes](#robot-changes)
 
 ## Overview
@@ -40,16 +39,16 @@ Include here what it is necessary to work
 
 Install this dependencies:
 ``` bash
-sudo apt-get install ros-noetic-joy 
-sudo apt-get install ros-noetic-robot-state-publisher
-sudo apt-get install ros-noetic-move-base  
-sudo apt-get install ros-noetic-map-server
-sudo apt-get install install ros-noetic-move-base 
-sudo apt-get install python3-opencv
+$ sudo apt-get install ros-noetic-joy 
+$ sudo apt-get install ros-noetic-robot-state-publisher
+$ sudo apt-get install ros-noetic-move-base  
+$ sudo apt-get install ros-noetic-map-server
+$ sudo apt-get install install ros-noetic-move-base 
+$ sudo apt-get install python3-opencv
 ``` 
 Install python packages using pip:
 ``` bash
-pip install -r requirements.txt
+$ pip install -r requirements.txt
 ```
 Export environment variable:
 
@@ -115,6 +114,7 @@ Vision was split into object detection using YOLO and color masking for the colo
 <img src="docs/vision.jpeg" alt="Cv and yolo programs working" width="500"
 />
 
+The `object_detection.py` program, uses the yolov3 model to detect objects, and then uses this information and displays the objects it detects, with a bounding box around it. These bounding boxes only appear on certaint objects, using the names of the objects the model can detect and the weight of each object, using the `coco.names` and `yolov3-tiny.weights` files respectively.
 
 ## Mapping Localization and planning
 amcl takes in a laser-based map, laser scans, and transform messages, and outputs pose estimates.
@@ -197,21 +197,6 @@ Due to one of the missions being the usage of finding certaint objecs on the apa
 
 ### Teleoperation
 Due to our use of the teleoperation was use only initially and while testing and while debugging, the `rqt_robot_steering` plugin was originally used, however the `keyboard_teleop.launch` is a more simple and usable version, used from the turtlebot_teleop package.
-
-
-### Vision
-To simplify the operation of vision, the process was devided into two programs. Both work with the same image, that was taken by the camera when the robot is in the [Some type of state].
-
-The `object_detection.py` program, uses the yolov3 model to detect objects, and then uses this information and displays the objects it detects, with a bounding box around it. These bounding boxes only appear on certaint obexts, using the names of the objects the model can detect and the weight of each object, using the `coco.names` and `yolov3-tiny.weights` files respectively.
-
-
-The `color_detection.py` program, obtains the contours and the centroids of each color that we implemented, these being red, blue and green. Whith this information, the program subtracts the information given, showing only the detected objects with those colors.
-
-
-On the image below we can see the results of the `object_detection.py` program, where we can see the bounding boxes around the objects detected, and the `color_detection.py` program, where we can see the centroids of the objects detected and the mask created using the contours of the objects.
-
-<img src="docs/vision.jpeg" alt="Cv and yolo programs working" width="500"
-/>
 
 
 
