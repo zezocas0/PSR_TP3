@@ -67,12 +67,13 @@ class CountServer:
           num += 1
           rospy.loginfo(f'Found {goal.objectType} {goal.color} in {goal.room}')
 
-        print(time.time() - start)
-        if time.time() - start > 3:
-            break
-
       except AttributeError:
         continue
+
+
+      print(time.time() - start)
+      if time.time() - start > 3:
+          break
 
     #rotate 45º
     start = time.time()
