@@ -13,6 +13,7 @@
 
 * [Overview](#overview)
 * [Setting up](#setup)
+* [How to use](#how-to-use)
 
 
 
@@ -44,6 +45,14 @@ Export environment variable:
 export TURTLEBOT3_MODEL=waffle_pi
 ```
 
+## How to use
+
+- ### Launching
+  - 
+- ### Requesting a mission
+  - Using RVIZ around the robot there is a grey cube, if right clicked a menu shows-up
+  <img src='docs/menu.jpeg' width='300'>
+  - This menu is automatically populated by the contents of properties.yaml, how the menu is populated can be restricted based on the type of mission
 
 
 For ease of use, we created launch files to launch of the packages, mostly for the manual testing of the programs. 
