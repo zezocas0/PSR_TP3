@@ -59,16 +59,18 @@ class CountServer:
             if goal.color == self.color.polygon:
                     feedback = CountFeedback()
                     feedback.foundAny = True
-                    self.server.publish_feedback()
+                    self.server.publish_feedback(feedback)
                     result = CountResult()
                     result.num += 1
                     rospy.loginfo(f'Found {goal.objectType} {goal.color} in {goal.room}')
 
-        except rospy.ROSException:
+
             if time.time() - start > 10:
                 rospy.loginfo(f'Could not count {goal.objectType} in {goal.room}')
                 rotate(0)
                 break
+        except AttributeError:
+          continue
 
 if __name__ == '__main__':
   rospy.init_node('count_server')
