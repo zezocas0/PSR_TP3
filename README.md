@@ -9,7 +9,8 @@ For ease of use, we created launch files to launch of the packages, mostly for t
 
 
 ## Changes/ Implementations
-Implementations and changes made to the robot and the code, in order to finish the all of the missions that were proposed.
+<details> 
+  <summary>Implementations made and missions achieved</summary>
 
 ### Missions 
 
@@ -84,6 +85,6 @@ Another possibility is the use of two cameras, to try and detect when a certain 
 
 
 
-
+</details>
 
 
