@@ -89,39 +89,6 @@ class CountServer:
 
       rotate(0)
 
-    # visited = []
-    # start = time.time()
-    # #rotation ~ 30º
-    # while True:
-    #   if time.time() - start > 3:
-    #       break
-    #   try:
-    #     if goal.color == self.color.polygon:
-    #       self.color = None
-    #       if (self.color.x, self.color.y) in visited:
-    #         rospy.loginfo('Already counted this object')
-    #         break
-    #       visited.append((self.color.x, self.color.y))
-    #       rospy.loginfo(f'Found {goal.objectType} {goal.color} in {goal.room}')
-    #       num += 1
-    #       print("num: ",num)
-
-    #   except AttributeError as e:
-    #     continue
-    
-    # rospy.loginfo(f'Found {num} {goal.objectType}s so far')
-
-    # #rotate 45º
-    # start = time.time()
-
-    # now = time.time()
-    # while now - start < 2:
-    #   rotate(50)
-    #   now = time.time()
-
-    # rotate(0)
-
-
     feedback = CountFeedback()
     if num > 0:
       feedback.foundAny = True
@@ -131,27 +98,6 @@ class CountServer:
     else:
       feedback.foundAny = False
       self.server.publish_feedback(feedback)
-
-    # while True:
-    #     rotate(50)
-    #     try:
-    #         if goal.color == self.color.polygon:
-    #           self.color = None
-    #           feedback = CountFeedback()
-    #           feedback.foundAny = True
-    #           self.server.publish_feedback(feedback)
-    #           result = CountResult()
-    #           result.num += 1
-    #           rospy.loginfo(f'Found {goal.objectType} {goal.color} in {goal.room}')
-
-
-    #         if time.time() - start > 10:
-    #             rospy.loginfo(f'Could not count {goal.objectType} in {goal.room}')
-    #             rotate(0)
-    #             break
-    #     except AttributeError:
-    #       continue
-
 if __name__ == '__main__':
   rospy.init_node('count_server')
   server = CountServer()
