@@ -14,7 +14,7 @@
 * [Setting up](#setup)
 * [How to use](#how-to-use)
 * [Vision](#vision)
-
+* [Launching](#launching)
 
 ## Overview
 
@@ -46,9 +46,47 @@ export TURTLEBOT3_MODEL=waffle_pi
 
 ## How to use
 
-- ### Launching
-  - 
-- ### Requesting a mission
+### Launching 
+```
+$ roslaunch robutler_bringup gazebo.launch
+```
+```
+$ roslaunch robutler_bringup bringup.launch  
+```
+```
+$ roslaunch robutler_navigation localization.launch
+```
+
+```
+$ roslaunch robutler_missions missions.launch 
+```
+
+```
+$ roslaunch robutler_controller action_server.launch 
+```
+
+```
+$ roslaunch robutler_vision vision.launch
+```
+<details> 
+  <summary>Opcionais</summary>
+```
+$ ./launch_scripts/spawn_objects.sh 
+```
+(Automaticaly spawns objects)
+
+```
+$./launch_scripts/move_robutler.sh
+```
+(Control the robot using the keyboard WASD)
+
+```
+$ ./move_robutler_to.sh <X> <Y>
+```
+(Send an action to move the robot to `X` and `Y` coordinates)
+</details>
+
+## Requesting a mission
   - Using RVIZ around the robot there is a grey cube, if right clicked a menu shows-up
   <img src='docs/menu.jpeg' width='300'>
   - This menu is automatically populated by the contents of properties.yaml, how the menu is populated can be restricted based on the type of mission
@@ -73,7 +111,6 @@ Navigation Stack           |  Navigation Behaviour
 ![](docs/navigation%20stack.png)  |  ![](docs/nav_behaviour.png)
 
 
-#
 
 For ease of use, we created launch files to launch of the packages, mostly for the manual testing of the programs. 
 Here is a lisf of the launch files used, their packages and their functions:
