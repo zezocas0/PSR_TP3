@@ -1,9 +1,50 @@
 # Robutler-G1
 
-Practical work 3 carried out within the scope of the PSR curricular unit.
+<!-- Create table -->
+| Nome                      | e-mail          | Nºmec |
+| ------------------------ | -------------- | -------- |
+| Henrique Sousa | henrique@ua.pt | 987652|
+| José Santos | josesousa@ua.pt |987652|
+|Roberto Figueiredo |robertof@ua.pt| 116147|
+
+---
+
+# Sumary 
+
+* [Overview](#overview)
+* [Setting up](#setup)
 
 
-## Launch files
+
+## Overview
+
+Practical work 3 carried out within the scope of the PSR curricular unit. It uses ROS to implement a robot able to autonomously move and perform tasks, such as identify objects, count objects, take photos, etc.
+
+
+## Setup
+
+Include here what it is necessary to work
+
+Install this dependencies:
+``` bash
+sudo apt-get install ros-noetic-joy 
+sudo apt-get install ros-noetic-robot-state-publisher
+sudo apt-get install ros-noetic-move-base  
+sudo apt-get install ros-noetic-map-server
+sudo apt-get install install ros-noetic-move-base 
+sudo apt-get install python3-opencv
+``` 
+Install python packages using pip:
+``` bash
+pip install -r requirements.txt
+```
+Export environment variable:
+
+``` bash
+export TURTLEBOT3_MODEL=waffle_pi
+```
+
+
 
 For ease of use, we created launch files to launch of the packages, mostly for the manual testing of the programs. 
 Here is a lisf of the launch files used, their packages and their functions:
@@ -23,8 +64,6 @@ Here is a lisf of the launch files used, their packages and their functions:
   
 - robutler_navigation
   - `localization.launch` - locates the robot in the map.
-
-
 
 
 ## Changes/ Implementations
