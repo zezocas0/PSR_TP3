@@ -7,7 +7,7 @@ import actionlib
 from datetime import datetime
 from std_msgs.msg import String
 from robutler_missions.msg import Request
-from robutler_controller.msg import MoveRobutlerAction, MoveRobutlerGoal, TakePhotoAction, TakePhotoGoal, FindAction, FindGoal, CountAction, CountGoal
+from robutler_controller.msg import MoveRobutlerAction, MoveRobutlerGoal, TakePhotoAction, TakePhotoGoal, FindAction, FindGoal, CountAction, CountGoal, CountFeedback, CountResult
 import geometry_msgs.msg
 
 class Room:
@@ -119,8 +119,8 @@ class Actions:
 
             goal = CountGoal()
             goal.room = room.get_name()
-            goal.objectType = object.get_name()
-            goal.color = "red" #TODO: Get Color Somehow
+            goal.objectType = object.get_name().split('-')[1]
+            goal.color = object.get_name().split('-')[0]
             client.send_goal(goal)
             client.wait_for_result()
     
@@ -147,10 +147,7 @@ class Actions:
             client.send_goal(goal)
             client.wait_for_result()
 
-            #TODO: Stop searching when finding the object
 
-
-'''----------------------------------------'''
 
 def msg_callback(args, msg):
 
