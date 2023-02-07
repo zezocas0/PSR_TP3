@@ -10,11 +10,24 @@
 
 # Sumary 
 
-* [Overview](#overview)
-* [Setting up](#setup)
-* [How to use](#how-to-use)
-* [Vision](#vision)
-* [Launching](#launching)
+
+- [Robutler-G1](#robutler-g1)
+- [Sumary](#sumary)
+  - [Overview](#overview)
+  - [Setup](#setup)
+  - [How to use](#how-to-use)
+    - [Launching](#launching)
+    - [Requesting a mission](#requesting-a-mission)
+  - [Vision](#vision)
+  - [Mapping Localization and planning](#mapping-localization-and-planning)
+  - [Changes/ Implementations](#changes-implementations)
+    - [Missions](#missions)
+    - [Navigation](#navigation)
+    - [Mapping](#mapping)
+    - [Object Spawning](#object-spawning)
+    - [Teleoperation](#teleoperation)
+    - [Vision](#vision-1)
+    - [Robot changes](#robot-changes)
 
 ## Overview
 
@@ -86,7 +99,8 @@ $ ./move_robutler_to.sh <X> <Y>
 (Send an action to move the robot to `X` and `Y` coordinates)
 </details>
 
-## Requesting a mission
+### Requesting a mission
+The rviz menu was implemented in order to make the actions of the robot easier to do, by implementing a interactive menu.
   - Using RVIZ around the robot there is a grey cube, if right clicked a menu shows-up
   <img src='docs/menu.jpeg' width='300'>
   - This menu is automatically populated by the contents of properties.yaml, how the menu is populated can be restricted based on the type of mission
@@ -96,14 +110,23 @@ $ ./move_robutler_to.sh <X> <Y>
 The vision system uses YOLO3-Tiny as demonstrated it has a better cost to performance ratio and is more suitable on minimal hardware 
 [[1]](https://arxiv.org/pdf/1807.05597.pdf)
 
+Vision was split into object detection using YOLO and color masking for the colored cubes.
+
+<img src="docs/vision.jpeg" alt="Cv and yolo programs working" width="500"
+/>
+
 
 ## Mapping Localization and planning
 amcl takes in a laser-based map, laser scans, and transform messages, and outputs pose estimates.
 amcl is a probabilistic localization system for a robot moving in 2D. It implements the adaptive (or KLD-sampling) Monte Carlo localization approach (as described by Dieter Fox), which uses a particle filter to track the pose of a robot against a known map.[[2]](http://wiki.ros.org/amcl)
 
-![Video of movement](docs/navigation.gif)
+
+<img src="docs/navigation.gif" width=550>
 
 For path planning and navigation, the ROS navigation stack is used with the implemented action server `move_base`. [[3]](http://wiki.ros.org/move_base)
+
+<img src="docs/cost_map.jpeg" width=550>
+To make it so that the robot doesnt crash, its taken into consideration the obstacles and the safe distace from them, being created a cost map that creates a safety zone around the obstacles, where the robot either slows down or stops, depending on the distance from the obstacle. In the image below its possible to see the cost map.
 
 <!-- two image table -->
 Navigation Stack           |  Navigation Behaviour
@@ -111,10 +134,9 @@ Navigation Stack           |  Navigation Behaviour
 ![](docs/navigation%20stack.png)  |  ![](docs/nav_behaviour.png)
 
 
-
 For ease of use, we created launch files to launch of the packages, mostly for the manual testing of the programs. 
 Here is a lisf of the launch files used, their packages and their functions:
-
+<!-- 
 - robutler_bringup
   - `navigation.launch` - Launches the navigation stack to move automatically the robot.
   - `gazebo.launch` - Launches the gazebo simulation,rviz, the navigation and the robot.
@@ -129,7 +151,7 @@ Here is a lisf of the launch files used, their packages and their functions:
   - `mission.launch` - Launches the `mission.py`, that creates the interactive menu.
   
 - robutler_navigation
-  - `localization.launch` - locates the robot in the map.
+  - `localization.launch` - locates the robot in the map. -->
 
 
 ## Changes/ Implementations
@@ -148,13 +170,6 @@ The missions possible that can be done by the robot are the following:
 5. Try and find objects in the map
  
 
-
-### Interactive Rviz menu
-The rviz menu was implemented in order to make the actions of the robot easier to do, by implementing a interactive menu. This menu has several options, these include:
-- Going to a specific room. 
-- Taking a picture.
-- Finding a specific object in the map.
-- Looking for a specific object only in a certain room.
 
 
 
@@ -183,7 +198,6 @@ Due to one of the missions being the usage of finding certaint objecs on the apa
 ### Teleoperation
 Due to our use of the teleoperation was use only initially and while testing and while debugging, the `rqt_robot_steering` plugin was originally used, however the `keyboard_teleop.launch` is a more simple and usable version, used from the turtlebot_teleop package.
 
-[image maybe?]
 
 ### Vision
 To simplify the operation of vision, the process was devided into two programs. Both work with the same image, that was taken by the camera when the robot is in the [Some type of state].
