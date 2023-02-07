@@ -64,13 +64,10 @@ class CountServer:
             break
         try:
           if goal.color == self.color.polygon:
-            print("Here")
             if [(self.color.x + offset, self.color.y + offset) for offset in range(-30, 30)] in visited:
               break
-            print("after break")
             visited.append((self.color.x,  self.color.y))
             num += 1
-            print("num: ", num)
             rospy.loginfo(f'Found {goal.objectType} {goal.color} in {goal.room}')
             self.color = None
 
