@@ -36,7 +36,12 @@ def object_callback(args, msg):
 class CountServer:
   def __init__(self):
     self.server = actionlib.SimpleActionServer('count', CountAction, self.execute, False)
+    self.sub = rospy.Subscriber('/vision/color_detection', DetectedColor, self.color_detected)
     self.server.start()
+    self.color = None
+
+  def color_detected(self, msg):
+    self.color = msg
 
   def execute(self, goal):
     rospy.loginfo(f'Counting {goal.objectType} in {goal.room}')
@@ -50,9 +55,8 @@ class CountServer:
     while True:
         rotate(50)
         try:
-            obj = rospy.wait_for_message("/vision/color_detection", DetectedColor, timeout=0.1)
-            print(goal.color, obj.polygon)
-            if goal.color == obj.polygon:
+            print(goal.color, self.color.polygon)
+            if goal.color == self.color.polygon:
                     feedback = CountFeedback()
                     feedback.foundAny = True
                     self.server.publish_feedback()
