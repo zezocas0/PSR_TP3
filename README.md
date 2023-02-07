@@ -3,17 +3,38 @@
 Practical work 3 carried out within the scope of the PSR curricular unit.
 
 
-## launch scripts 
+## Launch files
 
 For ease of use, we created launch files to launch of the packages, mostly for the manual testing of the programs. 
+Here is a lisf of the launch files used, their packages and their functions:
+
+- robutler_bringup
+  - `navigation.launch` - Launches the navigation stack to move automatically the robot.
+  - `gazebo.launch` - Launches the gazebo simulation,rviz, the navigation and the robot.
+  - `spawn.launch` - Spawns only the robot.
+  - `navigation.launch` - Use of acml package for localization, also use of map file and /scan topic to relocate the robot.
+  
+
+- robutler_vision
+  - `vision.launch` - uses `object_detection.py` and `color_detection.py` to detect objects and colors.
+  
+- robutler_missions
+  - `mission.launch` - Launches the `mission.py`, that creates the interactive menu.
+  
+- robutler_navigation
+  - `localization.launch` - locates the robot in the map.
+
+
 
 
 ## Changes/ Implementations
 <details> 
-  <summary>Implementations made and missions achieved</summary>
+  <summary>Implementations made and missions achieved ...</summary>
+
+
+
 
 ### Missions 
-
 The missions possible that can be done by the robot are the following:
 1. Go to a specific location  in acordance to user input
 2. Go to a predefined location based on which room the user wants to go to
@@ -33,8 +54,15 @@ The rviz menu was implemented in order to make the actions of the robot easier t
 
 
 ### Navigation
-For the robot to navigate the map, it uses the map and uses the same method for all the movements and finds the shortest distance to that position, taking into consideration the obstacles and the safe distace from them, therefore moving in a safe way. 
+For the robot to navigate the map, it uses the map and uses the same method for all the movements and finds the shortest distance to that position.
+In the video below we can see the robot navigating the map. 
 
+![Navigation](docs/navigation.gif "navigation")
+
+To make it so that the robot doesnt crash, its taken into consideration the obstacles and the safe distace from them, being created a cost map that creates a safety zone around the obstacles, where the robot either slows down or stops, depending on the distance from the obstacle.
+In the image below its possible to see the cost map.
+
+![Cost map](docs/cost_map.jpeg "cost map, the color changes depending on how far from the obstacle it is ")
 
 ### Mapping
 The mapping of the apartment was recorded using SLAM to a `.pmg` file, whitch is afterwards launched in the `navigation.launch` on the robutler_bringup package. This launch file also contains the particle filter, whitch is only used when the robot doesnt know its position, after being moved or after a reset.
