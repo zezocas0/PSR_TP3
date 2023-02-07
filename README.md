@@ -1,4 +1,4 @@
-# Robutler-G1
+<h1> Robutler-G1 </h1>
 
 | Nome                      | e-mail          | Nºmec |
 | ------------------------ | -------------- | -------- |
@@ -7,22 +7,18 @@
 |Roberto Figueiredo |robertof@ua.pt| 116147|
 
 ---
+<H1> Summary </h1>
 
-# Sumary 
-
-
-- [Robutler-G1](#robutler-g1)
-- [Sumary](#sumary)
-  - [Overview](#overview)
-  - [Setup](#setup)
-  - [How to use](#how-to-use)
-    - [Launching](#launching)
-    - [Requesting a mission](#requesting-a-mission)
-  - [Vision](#vision)
-  - [Mapping Localization and planning](#mapping-localization-and-planning)
-  - [Robot changes](#robot-changes)
-  - [rqt\_graph](#rqt_graph)
-
+- [Overview](#overview)
+- [Setup](#setup)
+- [How to use](#how-to-use)
+  - [Launching](#launching)
+  - [Requesting a mission](#requesting-a-mission)
+- [Vision](#vision)
+- [Mapping Localization and planning](#mapping-localization-and-planning)
+- [Robot changes](#robot-changes)
+- [rqt\_graph](#rqt_graph)
+---
 ## Overview
 
 Practical work 3 carried out within the scope of the PSR curricular unit. It uses ROS to implement a robot able to autonomously move and perform tasks, such as identify objects, count objects, take photos, etc.
